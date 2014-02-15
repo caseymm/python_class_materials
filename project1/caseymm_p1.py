@@ -5,8 +5,19 @@ import re, string
 def process_file(filename):
     hist = dict()
     grimms = open(filename)
+    block = ""
+    content = False
+    
     for line in grimms:
-        process_line(line,hist)
+        if content:
+            block += line
+            if line.strip() == "End of Project Gutenberg\'s Grimms\' Fairy Tales, by The Brothers Grimm": break
+            process_line(line,hist)
+        else:
+            if line.strip() == "THE BROTHERS GRIMM FAIRY TALES":
+                content = True
+                block = "THE BROTHERS GRIMM FAIRY TALES"
+                
     return hist
 
 #match = re.search(r"([A-Z]+\s)+\n", grimms.read())
@@ -15,8 +26,6 @@ def process_file(filename):
 def process_line(line,hist):
     #line = line.replace('-',' ')
     match = re.search(r"((([A-Z]+\S*[A-Z]+))\s)+$", line)
-    #match_break = re.search(r"\n+", line)
-    #together = match + match_break
     if match:
         print match.group()
     #else:
