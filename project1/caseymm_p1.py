@@ -23,31 +23,18 @@ def process_file(filename):
                 title = match.group()
                 print title
                 line = line.replace('-',' ')
-                for word in line.split():
-                    word = word.strip(string.punctuation + string.whitespace)
-                    word = word.lower()
-                    hist[word] = hist.get(word,0) +1
-                print hist #This prints one histogram for each title and counts the words in the titles
-            #process_line(line,hist)
-            
-            #(num) = line.strip().split()
-            #print dept, item, num, linenum
-            #inv.setdefault(num,{}).append(linenum)
-            ###print linenum
+            for word in line.split():
+                word = word.strip(string.punctuation + string.whitespace)
+                word = word.lower()
+                hist.setdefault(word,{}).setdefault(title,[]).append(linenum)
             
         else:
             if line.strip() == "THE BROTHERS GRIMM FAIRY TALES":
                 content = True
                 block = "THE BROTHERS GRIMM FAIRY TALES"
-                
+    print hist
+    print hist['quails']
     return hist
-
-#match = re.search(r"([A-Z]+\s)+\n", grimms.read())
-#titles = re.findall(r"[A-Z]+", grimms.read())
-
-
-#def process_line(line,hist):
-    
     
             
 hist = process_file('grimms.txt')
