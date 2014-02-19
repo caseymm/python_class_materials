@@ -8,15 +8,8 @@ print "query = " + query
 print
 query_words = query.split()
 n = 0
-search_param = 'get_all'
-for i in query_words:
-    n = n+1
-    if n > 1:
-        if query_words[1] == 'and':
-            search_param = "and"
-        elif query_words[1] == 'or':
-            search_param = 'or'
-print search_param
+param = ''
+
 
 hist = dict()
 grimms = open('grimms.txt')
@@ -59,35 +52,107 @@ for line in grimms:
 for word in stop_words:
     if word in hist:
         del hist[word]  
-    
-def the_query(query_words, hist, inv):    
-    print query
-    for query_word in query_words: 
-        if query_word not in hist:
-            print "--"
-        else:
-            for title in hist[query_word]:
-                print "  " + title
-                for query_word in query_words:
+
+for i in query_words:
+    n = n+1
+    if n > 1:
+        if query_words[1] == 'and': ####This one is not set up correctly
+            del query_words[1]
+            def the_query(query_words, hist, inv):
+                print query
+                for query_word in query_words: 
                     if query_word not in hist:
-                        print "    " + query_word
-                        print "    --"
+                        print "--"
                     else:
-                        print "    " + query_word
-                        query_upper = ("**"+ query_word.upper() +"**")
-                        word_hist = hist[query_word]
-                        this_line = word_hist.get(title, "empty")
-                        
-                        if this_line == "empty":
-                            print "    --"
-                        else:            
-                            for number in this_line:
-                                if number in inv.keys():
-                                    myline = inv.get(number)
-                                    for i in myline:
-                                        entry = "      " + str(number) + "  " + i.replace(query_word, query_upper)
-                                        print entry
-
+                        for title in hist[query_word]:
+                            print "  " + title
+                            for query_word in query_words:
+                                if query_word not in hist:
+                                    print "    " + query_word
+                                    print "    --"
+                                else:
+                                    print "    " + query_word
+                                    query_upper = ("**"+ query_word.upper() +"**")
+                                    word_hist = hist[query_word]
+                                    this_line = word_hist.get(title, "empty")
+                                                
+                                    if this_line == "empty":
+                                        print "    --"
+                                    else:            
+                                        for number in this_line:
+                                            if number in inv.keys():
+                                                myline = inv.get(number)
+                                                for i in myline:
+                                                    entry = "      " + str(number) + "  " + i.replace(query_word, query_upper)
+                                                    print entry
+                
+            the_query(query_words, hist, inv)
+        elif query_words[1] == 'or':
+            del query_words[1]
+            def the_query(query_words, hist, inv):
+                print query
+                for query_word in query_words: 
+                    if query_word not in hist:
+                        print "--"
+                    else:
+                        for title in hist[query_word]:
+                            print "  " + title
+                            for query_word in query_words:
+                                if query_word not in hist:
+                                    print "    " + query_word
+                                    print "    --"
+                                else:
+                                    print "    " + query_word
+                                    query_upper = ("**"+ query_word.upper() +"**")
+                                    word_hist = hist[query_word]
+                                    this_line = word_hist.get(title, "empty")
+                                            
+                                    if this_line == "empty":
+                                        print "    --"
+                                    else:            
+                                        for number in this_line:
+                                            if number in inv.keys():
+                                                myline = inv.get(number)
+                                                for i in myline:
+                                                    entry = "      " + str(number) + "  " + i.replace(query_word, query_upper)
+                                                    print entry
             
+            the_query(query_words, hist, inv)
+        else:
+            #search_param = param + 'get_all'
+            print 'inner else'
+    elif n == 1:
+        def the_query(query_words, hist, inv):
+            print query
+            for query_word in query_words: 
+                if query_word not in hist:
+                    print "--"
+                else:
+                    for title in hist[query_word]:
+                        print "  " + title
+                        for query_word in query_words:
+                            if query_word not in hist:
+                                print "    " + query_word
+                                print "    --"
+                            else:
+                                print "    " + query_word
+                                query_upper = ("**"+ query_word.upper() +"**")
+                                word_hist = hist[query_word]
+                                this_line = word_hist.get(title, "empty")
+                                            
+                                if this_line == "empty":
+                                    print "    --"
+                                else:            
+                                    for number in this_line:
+                                        if number in inv.keys():
+                                            myline = inv.get(number)
+                                            for i in myline:
+                                                entry = "      " + str(number) + "  " + i.replace(query_word, query_upper)
+                                                print entry
+            
+        the_query(query_words, hist, inv)
 
-the_query(query_words, hist, inv)
+   
+
+
+
