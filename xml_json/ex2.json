@@ -1,0 +1,48 @@
+{	"reportDate": "18-Feb-214",
+	"reportType": "emprec",
+	"empData":
+	[
+		{
+			"firstName": "John",
+			"lastName": "Smith",
+			"age": 25,
+			"address": {
+				"streetAddress": "21 2nd Street",
+				"city": "New York",
+				"state": "NY",
+				"postalCode": 10021
+			},
+			"phoneNumbers": [
+				{
+					"type": "home",
+					"number": "212 555-1234"
+				},
+				{
+					"type": "fax",
+					"number": "646 555-4567"
+				}
+			]
+		},
+				{
+			"firstName": "Mary",
+			"lastName": "Jones",
+			"age": 28,
+			"address": {
+				"streetAddress": "123 41st Street",
+				"city": "New York",
+				"state": "NY",
+				"postalCode": 10021
+			},
+			"phoneNumbers": [
+				{
+					"type": "home",
+					"number": "212 555-9876"
+				},
+				{
+					"type": "cell",
+					"number": "646 555-1122"
+				}
+			]
+		}
+	]
+}

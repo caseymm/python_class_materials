@@ -2,7 +2,11 @@
 #check for the character length of my lines to abide by style guide
 import re, string
 
-#grimms = open("grimms.txt","r")
+print ("Enter your query:")
+
+query = raw_input ("> ")
+print query
+query_words = query.split()
 
 def process_file(filename):
     hist = dict()
@@ -34,23 +38,28 @@ def process_file(filename):
             if line.strip() == "THE BROTHERS GRIMM FAIRY TALES":
                 content = True
                 block = "THE BROTHERS GRIMM FAIRY TALES"
-    print hist
-    print hist['quails']
-    this_line = hist['quails'][title][0] #this returns the bracketed line matching the line number of the query
-    #Only set to the first word in the list atm
-    #Isn't working for other queries either - try something like for get title in this_line
-    
-    print this_line
-    #for x in this_line:
-    #    print this_line
-    
-    if this_line in inv.keys():
-        myline = inv.get(this_line)
-        for i in myline:
-            print i
-    #line_list = list(inv.keys())
-    #print line_list
+    #print hist
     #print inv
+    
+    for query_word in query_words:
+        print hist[query_word]
+        for title in hist[query_word]:
+            print title
+            this_line = hist[query_word][title] #this returns the bracketed line matching the line number of the query
+            #Only set to the first word in the list atm
+            #Isn't working for other queries either - try something like for get title in this_line
+            
+            #print this_line
+            for number in this_line:
+                print number
+            
+                if number in inv.keys():
+                    myline = inv.get(number)
+                    for i in myline:
+                        print i
+                        #line_list = list(inv.keys())
+                        #print line_list
+                        #print inv
     return hist
 
     #for i in list following in title change [0] to something like [i] so that it will do it for each word
