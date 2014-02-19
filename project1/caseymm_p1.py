@@ -7,52 +7,62 @@ print
 print "query = " + query
 print
 query_words = query.split()
+n = 0
+search_param = 'get_all'
+for i in query_words:
+    n = n+1
+    if n > 1:
+        if query_words[1] == 'and':
+            search_param = "and"
+        elif query_words[1] == 'or':
+            search_param = 'or'
+print search_param
 
-def process_file(filename):
-    hist = dict()
-    grimms = open(filename)
-    block = ""
-    content = False
-    inv = {}
-    linenum = 120
+hist = dict()
+grimms = open('grimms.txt')
+block = ""
+content = False
+inv = {}
+linenum = 120
     
-    fin = open("stopwords.txt","r")
-    stop_words = dict()
+fin = open("stopwords.txt","r")
+stop_words = dict()
     
-    for line in fin:
-        line = line.rstrip()
-        stop_words.setdefault(line,{})
+for line in fin:
+    line = line.rstrip()
+    stop_words.setdefault(line,{})
     
-    for line in grimms:
-        if content:
-            block += line
-            if line.strip() == "End of Project Gutenberg\'s Grimms\' Fairy Tales, by The Brothers Grimm": break
-            linenum += 1
-            printed_line = line.lower()
-            inv.setdefault(linenum,[]).append(printed_line.rstrip())
-            match = re.search(r"((([A-Z]+\S*[A-Z]+))\s)+$", line)
+for line in grimms:
+    if content:
+        block += line
+        if line.strip() == "End of Project Gutenberg\'s Grimms\' Fairy Tales, by The Brothers Grimm": break
+        linenum += 1
+        printed_line = line.lower()
+        inv.setdefault(linenum,[]).append(printed_line.rstrip())
+        match = re.search(r"((([A-Z]+\S*[A-Z]+))\s)+$", line)
             
-            if match:
-                title = match.group()
-                title = title.rstrip()
-                line = line.replace('-',' ')
+        if match:
+            title = match.group()
+            title = title.rstrip()
+            line = line.replace('-',' ')
                 
-            for word in line.split():
-                word = word.strip(string.punctuation + string.whitespace)
-                word = word.lower()
-                hist.setdefault(word,{}).setdefault(title,[]).append(linenum)
+        for word in line.split():
+            word = word.strip(string.punctuation + string.whitespace)
+            word = word.lower()
+            hist.setdefault(word,{}).setdefault(title,[]).append(linenum)
             
-        else:
-            if line.strip() == "THE BROTHERS GRIMM FAIRY TALES":
-                content = True
-                block = "THE BROTHERS GRIMM FAIRY TALES"
+    else:
+        if line.strip() == "THE BROTHERS GRIMM FAIRY TALES":
+            content = True
+            block = "THE BROTHERS GRIMM FAIRY TALES"
     
-    for word in stop_words:
-        if word in hist:
-            del hist[word]
+for word in stop_words:
+    if word in hist:
+        del hist[word]  
     
+def the_query(query_words, hist, inv):    
     print query
-    for query_word in query_words: ##maybe for query in hist?
+    for query_word in query_words: 
         if query_word not in hist:
             print "--"
         else:
@@ -76,9 +86,8 @@ def process_file(filename):
                                     myline = inv.get(number)
                                     for i in myline:
                                         entry = "      " + str(number) + "  " + i.replace(query_word, query_upper)
-                                        #print i.replace(query, query_upper)
                                         print entry
-    return hist
-            
-hist = process_file('grimms.txt')
 
+            
+
+the_query(query_words, hist, inv)
