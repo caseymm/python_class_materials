@@ -41,12 +41,21 @@ def subtract (d1, d2):
 hist = process_file('emma_ch1.txt')
 
 t = most_common(hist)
+words = process_file('words.txt')
 print "Total words = ", different_words(hist)
+print
+diff = subtract(hist, words)
+print diff
+for word in diff.keys():
+    print word
+print
+print
 print "Different words = ", different_words(hist)
+print
 print "Most common:"
 for freq, word in t[0:10]:
     print word, "\t", freq
     
-words = process_file('words.txt')
+
     
     
