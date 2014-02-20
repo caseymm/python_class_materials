@@ -72,14 +72,16 @@ for word in stop_words:
 def the_query(query_words, hist, inv):    
     print query
     title_dict = {}
-    for query_word in query_words: 
-        if query_word not in hist:
-            print "--"
-        else:
-            for title in hist[query_word]:
-                title_dict.setdefault(title,[]).append(query_word)
-                title_dict[title].sort()
-            if search_param == "and" or "get_all":
+    if search_param == "and" or search_param == "get_all" or search_param == "get_one":
+        for query_word in query_words:
+            print query_word
+            if query_word not in hist:
+                print "--"
+            else:
+                for title in hist[query_word]:
+                    title_dict.setdefault(title,[]).append(query_word)
+                    title_dict[title].sort()
+                
                 final_titles = []
                 for title in title_dict:
                     if query_words == title_dict[title]:
@@ -95,40 +97,30 @@ def the_query(query_words, hist, inv):
                             query_upper = ("**"+ query_word.upper() +"**")
                             word_hist = hist[query_word]
                             this_line = word_hist.get(title, "empty")
-                                        
-                            if this_line == "empty":
-                                if search_param == 'and':
-                                    print "no match"
-                                       #sys.exit()
-                                else:
-                                    print "    --"
-                            else:            
-                                for number in this_line:
-                                    if number in inv.keys():
-                                        myline = inv.get(number)
-                                        for i in myline:
-                                            entry = "      " + str(number) + "  " + i.replace(query_word, query_upper)
-                                            print entry
+                                            
+                            for number in this_line:
+                                if number in inv.keys():
+                                    myline = inv.get(number)
+                                    for i in myline:
+                                        entry = "      " + str(number) + "  " + i.replace(query_word, query_upper)
+                                        print entry
                             
-            elif search_param == "or" or "get_one":
-                print "  " + title
-                
-                for query_word in query_words:
-                    if query_word not in hist:
-                        print "    " + query_word
-                        print "    --"
-                    else:
+    else:
+        for query_word in query_words:
+            if query_word not in hist:
+                print "--"
+            else:
+                for title in hist[query_word]:
+                    print "  " + title
+                    
+                    for query_word in query_words:
                         print "    " + query_word
                         query_upper = ("**"+ query_word.upper() +"**")
                         word_hist = hist[query_word]
                         this_line = word_hist.get(title, "empty")
-                        
+                            
                         if this_line == "empty":
-                            if search_param == 'and':
-                                print "no match"
-                                #sys.exit()
-                            else:
-                                print "    --"
+                            print "    --"
                         else:            
                             for number in this_line:
                                 if number in inv.keys():
