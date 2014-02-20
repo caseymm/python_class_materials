@@ -1,17 +1,17 @@
-#REMEMBER
-#check for the character length of my lines to abide by style guide
-import re, string, sys
+import re
+import string
+import sys
 import os
 
 user_query = raw_input ("Enter your query: ")
 
-#makes the user's query lowercase
+# Makes the user's query lowercase
 query = user_query.lower()
 print
 if query == "qquit":
     sys.exit()
 
-#function restarts program if query != "qquit"    
+# Function restarts program if query != "qquit"    
 def restart_program():
     python = sys.executable
     os.execl(python, python, * sys.argv)
@@ -20,7 +20,7 @@ print "query = " + query
 print
 query_words = query.split()
 
-#takes the user's split input and assigns search_param depending on matching terms
+# Takes the user's input and assigns search_param depending on matching terms
 n = 0
 search_param = 'get_all'
 for i in query_words:
@@ -38,19 +38,19 @@ for i in query_words:
             search_param = 'get_all'
             query_words.sort()
 
-#creates empty dict for words in the assigned content block to be searched
+# Creates empty dict for words in the assigned content block to be searched
 hist = dict()
 grimms = open('grimms.txt')
 block = ""
 content = False
 
-#sets linenum equal to 120 since the first 120 lines of grimms.txt are skipped
+# Sets linenum = 120 since the first 120 lines of grimms.txt are skipped
 linenum = 120
 
-#creates empty dict for pairing linenums with corresponding lines of text
+# Creates empty dict for pairing linenums with corresponding lines of text
 inv = {}
 
-#reads stopwords.txt and creates the dict for stop_words  
+# Reads stopwords.txt and creates the dict for stop_words  
 fin = open("stopwords.txt","r")
 stop_words = dict()
     
@@ -61,14 +61,17 @@ for line in fin:
 for line in grimms:
     if content:
         block += line
-        if line.strip() == "End of Project Gutenberg\'s Grimms\' Fairy Tales, by The Brothers Grimm": break
+ 
+        if line.strip() == "*****": # Finds end of grimms
+            break
+        
         linenum += 1
         printed_line = line.lower()
         
-        #populates dict that pairs linenums with corresponding lines of text
+        # Populates dict that pairs linenums with corresponding lines of text
         inv.setdefault(linenum,[]).append(printed_line.rstrip())
         
-        #searches for titles within the content block drawn from the grimms docuemnt
+        # Searches for titles within the content block taken from grimms
         match = re.search(r"((([A-Z]+\S*[A-Z]+))\s)+$", line)
             
         if match:
@@ -76,18 +79,18 @@ for line in grimms:
             title = title.rstrip()
             line = line.replace('-',' ')
         
-        #populates dict of words, w/dict of title, w/dict of linenums        
+        # Populates dict of words, w/dict of title, w/dict of linenums        
         for word in line.split():
             word = word.strip(string.punctuation + string.whitespace)
             word = word.lower()
             hist.setdefault(word,{}).setdefault(title,[]).append(linenum)
             
-    else:
+    else:   #Find beginning of Grimms
         if line.strip() == "THE BROTHERS GRIMM FAIRY TALES":
             content = True
             block = "THE BROTHERS GRIMM FAIRY TALES"
 
-#populates the stop_word hist   
+# Populates the stop_word hist   
 for word in stop_words:
     if word in hist:
         del hist[word]  
@@ -96,10 +99,10 @@ def the_query(query_words, hist, inv):
     #inits dict of titles for the ability to match all
     title_dict = {}
     
-    #runs following code depending on search param
-    if search_param == "and" or search_param == "get_all" or search_param == "get_one":
+    # Runs following code depending on search param
+    if search_param == "and" or search_param == "get_all"\
+                             or search_param == "get_one":
         for query_word in query_words:
-            
             if query_word not in hist:
                 print query_word
                 print "  --"
@@ -108,11 +111,11 @@ def the_query(query_words, hist, inv):
                     title_dict.setdefault(title,[]).append(query_word)
                     title_dict[title].sort()
                     
-                #for words in query, create list of stories it appears in    
+                # For words in query, create list of stories it appears in    
                 final_titles = []
                 for title in title_dict:
                     
-                    #do this if the lists for the words match
+                    # Do this if the lists for the words match
                     if query_words == title_dict[title]:
                         final_titles.append(title)
                         
@@ -128,14 +131,17 @@ def the_query(query_words, hist, inv):
                             word_hist = hist[query_word]
                             this_line = word_hist.get(title, "empty")
                                             
-                            #take linenum and match it to key in inv dict to print line
+                            # Take linenum and match it to key in inv dict to
+                            # print line from grimms
                             for number in this_line:
                                 if number in inv.keys():
                                     myline = inv.get(number)
                                     for i in myline:
-                                        entry = "      " + str(number) + "  " + i.replace(query_word, query_upper)
+                                        entry = "      " + str(number) + "  " +\
+                                                i.replace(query_word, query_upper)
                                         print entry
-        restart_program()        
+        restart_program()   # End & restart if statement if search_param and,
+                            # get_all, or get_one       
                             
     else:
         for query_word in query_words:
@@ -144,7 +150,6 @@ def the_query(query_words, hist, inv):
             else:
                 for title in hist[query_word]:
                     print "  " + title
-                    
                     for query_word in query_words:
                         if query_word not in hist:
                             print "    " + query_word
@@ -158,15 +163,18 @@ def the_query(query_words, hist, inv):
                             if this_line == "empty":
                                 print "    --"
                             else:
-                                
-                                #take linenum and match it to key in inv dict to print line
+                               
+                                # Take linenum and match it to key in inv dict
+                                # to print line from grimms
                                 for number in this_line:
                                     if number in inv.keys():
                                         myline = inv.get(number)
                                         for i in myline:
-                                            entry = "      " + str(number) + "  " + i.replace(query_word, query_upper)
+                                            entry = "      " + str(number) +\
+                                                    "  " + i.replace(query_word, query_upper)
                                             print entry
-        restart_program()  
+        restart_program()   # End & restart if statement if search_param not
+                            # and, get_all, or get_one  
             
 the_query(query_words, hist, inv)
 
