@@ -50,15 +50,6 @@ class Hand(Deck):
     def __init__(self,label=''):
         self.cards = []
         self.label = label
-    def has_four(self):
-        result = False
-        i = 0 
-        for card in self.cards:
-            if card.rank == 4:
-                i = i+1
-                if i >= 2:
-                    result = True
-        return result
     def has_pair(self):
         res = []
         result = False
@@ -84,14 +75,27 @@ class Hand(Deck):
                         if n >= 4:
                             result = True
         return result
+    def has_flush(self, num):
+        res = []
+        result = False
+        for card in self.cards:
+            res.append(card.suit)
+            for i in res:
+                res.count(i)
+                print res
+                res = [2,2,2,2,2]
+                if res.count(i) == num:
+                    result = True
+        return result
 
        
 
 d = Deck()
 h = Hand()
 d.shuffle()
-d.move_cards(h,5)
+d.move_cards(h,7)
 print h
 print
 print h.has_pair()
 print h.has_twopair()
+print h.has_flush(5)
