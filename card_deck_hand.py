@@ -43,7 +43,6 @@ class Deck(object):
     def move_cards(self, hand, num):
         for i in range(num):
             hand.add_card(self.pop_card())
-
         
 class Hand(Deck):
     ''' Hand inherits from Deck. '''
@@ -82,20 +81,45 @@ class Hand(Deck):
             res.append(card.suit)
             for i in res:
                 res.count(i)
-                print res
-                res = [2,2,2,2,2]
+                #print res
+                #res = [2,2,2,2,2]
                 if res.count(i) == num:
                     result = True
         return result
-
+    def classify(self):
+        label = ''
+        #print h.has_pair()
+        if h.has_flush(7):
+            label = "flush"
+            return label
+        if h.has_twopair():
+            label = "two pair"
+            return label
+        if h.has_pair():
+            label = "pair"
+            return label
+        else:
+            label = "high card"
+        return label
        
 
 d = Deck()
 h = Hand()
 d.shuffle()
+#allows for running 5 or 7 card hands
 d.move_cards(h,7)
+print "Your hand is:"
 print h
 print
+print "You have a pair:"
 print h.has_pair()
+print
+print "You have two pair:"
 print h.has_twopair()
-print h.has_flush(5)
+print
+print "You have a flush:"
+#allows for running 5 or 7 card hands
+print h.has_flush(7)
+print
+print "Your hand is:"
+print h.classify()
