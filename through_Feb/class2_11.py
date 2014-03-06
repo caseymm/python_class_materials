@@ -62,6 +62,5 @@ print str_reverse(word)
 palindrome = "racecar"
 #check to see if the reverse of the word is the same as the original
 
-print check_reverse(palindrome)
     
     
