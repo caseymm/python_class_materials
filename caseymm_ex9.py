@@ -16,7 +16,7 @@ for line in fp:
     tmp['semester'] = semester
     cis_list.append(tmp)
 fp.close()
-#print cis_list
+print cis_list
 
 c_counts = {} #course counts
 for d in cis_list:
