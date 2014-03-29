@@ -1,9 +1,10 @@
 import json
 from operator import itemgetter
+from collections import Counter
 
 #parse json data into list of dicts
 
-fp = open('usagov_ex1b.txt')
+fp = open('usagov_ex1.txt')
 records = []
 for line in fp:
     records.append(json.loads(line))
@@ -13,7 +14,7 @@ print
 print "short version"
 print
 
-fp = open('usagov_ex1b.txt')
+fp = open('usagov_ex1.txt')
 records = [json.loads(line) for line in fp]
 fp.close()
 
@@ -56,3 +57,10 @@ for tz in tzs:
 sorted_tzc = sorted(tz_counts.items(), key=itemgetter(1), reverse=True)
 for tz, c in sorted_tzc[:10]:
     print tz, c
+    
+print
+
+tzs2 = [rec['tz'] for rec in records if 'tz' in rec]
+cc = Counter(tzs2)
+print cc
+print cc.most_common(10)
