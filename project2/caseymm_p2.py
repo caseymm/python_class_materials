@@ -9,6 +9,9 @@ for line in fp:
     line = line.strip()
     #artist_info.append(line)
     fields = line.split();
+    
+    #only getting first word in artist name!!!
+    
     artist = fields[1]
     artist_id = int(fields[0])
     tmp = {}
@@ -18,7 +21,7 @@ for line in fp:
     artist_info_dict.setdefault(artist_id,[]).append(artist)
 fp.close()
 
-#print artist_info_dict
+#print artist_info
 #for keys in artist_info_dict:
     #print keys
 
@@ -31,6 +34,7 @@ for item in artist_info:
     #artist_info_sortable[(a)] = artist_info_sortable.get(a,pk)
     
 #print artist_info
+
 sorted_artist_info = sorted(artist_info_sortable.iteritems(), key=itemgetter(1))
 #print sorted_artist_info
 
@@ -102,13 +106,25 @@ for entry in play_info:
     #total_play_count.setdefault(pk,[]).append(query_word)
     total_play_count[pk] = total_play_count.get(pk,0) + weight
 
-print total_play_count
-#artist_plays_w_name = dict()
+#print total_play_count
 
-#maybe use .get(number) from other dict and just match that to the artist
-#for item in artist_info:
-#    artist_plays_w_name.setdefault(artist_info[1],{}).setdefault(artist_info[0],[]).append(linenum)
+artist_name_id_count = {}
+for (entry, count) in total_play_count.items():
+    #print entry, count
+    if entry in artist_info_dict:
+        this_artist = artist_info_dict.get(entry)
+        for i in this_artist:
+            #artist_name_id_count.setdefault(i,{}).setdefault(entry, []).append(count)
+            artist_name_id_count.setdefault(count,{}).setdefault(i, entry)
+        
+#print artist_name_id_count
 
-#could do for each time that the artist appears in a tag save that playcount and append it to a list
-#then add all of the list items together to get the total play count
+sorted_artist_name_id_count = sorted(artist_name_id_count.items(), key=itemgetter(0), reverse=True)
+
+#print sorted_artist_name_id_count[:10]
+
+for (count, artist) in sorted_artist_name_id_count[:10]:
+    for (artist_name, artist_id) in artist.items():
+        print '' + artist_name + ' ('+ str(artist_id) +') ' + str(count) + ''
+
 
