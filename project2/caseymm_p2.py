@@ -29,6 +29,7 @@ for item in artist_info:
     pk = item['artist_id']
     artist_info_sortable[(a,pk)] = artist_info_sortable.get(a,pk)
     #artist_info_sortable[(a)] = artist_info_sortable.get(a,pk)
+    
 #print artist_info
 sorted_artist_info = sorted(artist_info_sortable.iteritems(), key=itemgetter(1))
 #print sorted_artist_info
@@ -48,7 +49,7 @@ for line in fp2:
     artistID = int(fields[1])
     tagID = int(fields[2])
     day = int(fields[3])
-    month = fields[4]
+    month = int(fields[4])
     year = int(fields[5])
     tmp = {}
     tmp['userID'] = userID
@@ -66,18 +67,13 @@ fp2.close()
 tag_info_final = []
 for entry in tag_info:
     pk = entry['artistID']
-    userID = entry['userID']
-    tagID = entry['tagID']
-    day = entry['day']
-    month = entry['month']
-    year = entry['year']
     
-    #This gets names, but isn't actually what I want to do here. FAIL.
     if pk in artist_info_dict:
-        this_artist = artist_info_dict.get(pk)
-        tag_info_final.append(this_artist)
-        
-print tag_info_final
+        #this_artist = artist_info_dict.get(pk)
+        tag_info_final.append(entry)
+
+#Prints only tag info with correct years and with valid artist ids        
+#print tag_info_final
             
 
 fp3 = codecs.open("user_artists.dat", encoding="utf-8")
@@ -95,12 +91,24 @@ for line in fp3:
     tmp['weight'] = weight
     play_info.append(tmp)
 fp3.close()
-#need to create a new dictionary that gets the artist number and adds the playcount of that artist for each user to output total
+
 #print play_info
 
-artist_plays_w_name = dict()
+#get the play count for each artist id - doesn't list artist
+total_play_count = {}
+for entry in play_info:
+    pk = entry['artistID']
+    weight = entry['weight']
+    #total_play_count.setdefault(pk,[]).append(query_word)
+    total_play_count[pk] = total_play_count.get(pk,0) + weight
+
+print total_play_count
+#artist_plays_w_name = dict()
 
 #maybe use .get(number) from other dict and just match that to the artist
 #for item in artist_info:
 #    artist_plays_w_name.setdefault(artist_info[1],{}).setdefault(artist_info[0],[]).append(linenum)
+
+#could do for each time that the artist appears in a tag save that playcount and append it to a list
+#then add all of the list items together to get the total play count
 
