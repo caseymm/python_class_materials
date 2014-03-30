@@ -101,6 +101,7 @@ fp3.close()
 #get the play count for each artist id - doesn't list artist
 total_play_count = {}
 total_user_play_count = {}
+artist_to_users = {}
 for entry in play_info:
     pk = entry['artistID']
     user_pk = entry['userID']
@@ -108,6 +109,7 @@ for entry in play_info:
     #total_play_count.setdefault(pk,[]).append(query_word)
     total_play_count[pk] = total_play_count.get(pk,0) + weight
     total_user_play_count[user_pk] = total_user_play_count.get(user_pk,0) + weight
+    artist_to_users[pk] = artist_to_users.get(pk,0) + 1
 
 #print total_play_count
 
@@ -119,10 +121,19 @@ for (entry, count) in total_play_count.items():
         for i in this_artist:
             #artist_name_id_count.setdefault(i,{}).setdefault(entry, []).append(count)
             artist_name_id_count.setdefault(count,{}).setdefault(i, entry)
+
+artist_name_to_users = {}
+for (entry, user_count) in artist_to_users.items():
+    #print entry, count
+    if entry in artist_info_dict:
+        this_artist = artist_info_dict.get(entry)
+        for i in this_artist:
+            #artist_name_id_count.setdefault(i,{}).setdefault(entry, []).append(count)
+            artist_name_to_users.setdefault(user_count,{}).setdefault(i, entry)
         
-#print artist_name_id_count
 sorted_artist_name_id_count = sorted(artist_name_id_count.items(), key=itemgetter(0), reverse=True)
 sorted_total_user_play_count = sorted(total_user_play_count.items(), key=itemgetter(1), reverse=True)
+sorted_artist_name_to_users = sorted(artist_name_to_users.items(), key=itemgetter(0), reverse=True)
 
 print "1. Who are the top artists?"
 print
@@ -132,8 +143,18 @@ for (count, artist) in sorted_artist_name_id_count[:10]:
 
 print
 
-print "1. Who are the top users?"
+print "2. Who are the top users?"
 print
 for user_pk, weight in sorted_total_user_play_count[:10]:
-    print user_pk, weight
+    #print user_pk, weight
+    print 'user: ' + str(user_pk) + ', playcount: ' + str(weight) + ''
+
+print
+
+print "3. Which artists have the most listeners?"
+print
+for (user_count, artist) in sorted_artist_name_to_users[:10]:
+    for (artist_name, artist_id) in artist.items():
+        print '' + artist_name + ' ('+ str(artist_id) +') ' + str(user_count) + ''
+
 
