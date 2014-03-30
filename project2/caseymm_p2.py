@@ -25,7 +25,6 @@ fp.close()
 #for keys in artist_info_dict:
     #print keys
 
-
 artist_info_sortable = {} #sortable artist info
 for item in artist_info:
     a = item['artist']
@@ -128,12 +127,25 @@ for (entry, user_count) in artist_to_users.items():
     if entry in artist_info_dict:
         this_artist = artist_info_dict.get(entry)
         for i in this_artist:
-            #artist_name_id_count.setdefault(i,{}).setdefault(entry, []).append(count)
+            #i is artist name, entry is artist id
             artist_name_to_users.setdefault(user_count,{}).setdefault(i, entry)
+            
+average_plays = {}
+for entry in artist_to_users:
+    #print entry, artist_to_users[entry]
+    user_count = artist_to_users[entry]
+    if entry in total_play_count:
+        count = total_play_count[entry]
+        if entry in artist_info_dict:
+            this_artist = artist_info_dict.get(entry)
+            for i in this_artist:
+                #i is artist name, entry is artist id
+                average_plays.setdefault((count/user_count),{}).setdefault(i, entry)
         
 sorted_artist_name_id_count = sorted(artist_name_id_count.items(), key=itemgetter(0), reverse=True)
 sorted_total_user_play_count = sorted(total_user_play_count.items(), key=itemgetter(1), reverse=True)
 sorted_artist_name_to_users = sorted(artist_name_to_users.items(), key=itemgetter(0), reverse=True)
+sorted_average_plays = sorted(average_plays.items(), key=itemgetter(0), reverse=True)
 
 print "1. Who are the top artists?"
 print
@@ -156,5 +168,13 @@ print
 for (user_count, artist) in sorted_artist_name_to_users[:10]:
     for (artist_name, artist_id) in artist.items():
         print '' + artist_name + ' ('+ str(artist_id) +') ' + str(user_count) + ''
+
+print
+
+print "4. Which artists have the highest average number of plays per listener?"
+print
+for (avg_per, artist) in sorted_average_plays[:10]:
+    for (artist_name, artist_id) in artist.items():
+        print '' + artist_name + ' ('+ str(artist_id) +') ' + str(avg_per) + ''
 
 
