@@ -75,8 +75,7 @@ for entry in tag_info:
         tag_info_final.append(entry)
 
 #Prints only tag info with correct years and with valid artist ids        
-#print tag_info_final
-            
+#print tag_info_final   
 
 fp3 = codecs.open("user_artists.dat", encoding="utf-8")
 fp3.readline() #skip first line of headers
@@ -159,9 +158,46 @@ sorted_average_plays = sorted(average_plays.items(), key=itemgetter(0), reverse=
 sorted_average_plays_b = sorted(average_plays_b.items(), key=itemgetter(0), reverse=True)
 sorted_average_plays_50 = sorted(average_plays_50.items(), key=itemgetter(0), reverse=True)
 
-#for mini_dict in average_plays:
-#    sorted_average_plays = sorted(mini_dict, key=itemgetter(3), reverse=True)
-#    print sorted_average_plays
+#This starts number 6
+fp4 = codecs.open("user_friends.dat", encoding="utf-8")
+fp4.readline() #skip first line of headers
+friend_info = []
+for line in fp4:
+    line = line.strip()
+    fields = line.split();
+    userID = int(fields[0])
+    friendID = int(fields[1])
+    tmp = {}
+    tmp['userID'] = userID
+    tmp['friendID'] = friendID
+    friend_info.append(tmp)
+fp4.close()
+
+total_friend_count = {}
+for entry in friend_info:
+    userID = entry['userID']
+    friendID = entry['friendID']
+    total_friend_count[userID] = total_friend_count.get(userID,0) + 1
+
+five_or_more = {}
+less_than_five = {}
+for entry in total_friend_count:
+    count = total_friend_count.get(entry)
+    if count >= 5:
+        five_or_more.setdefault(entry, count)
+    elif count < 5:
+        less_than_five.setdefault(entry, count)
+
+total_plays_five_or_more = {}
+for user_pk, weight in sorted_total_user_play_count:
+    if user_pk in five_or_more:
+        total_plays_five_or_more[user_pk] = total_plays_five_or_more.get(user_pk,0) + weight
+
+total_plays_less_than_five = {}
+for user_pk, weight in sorted_total_user_play_count:
+    if user_pk in less_than_five:
+        total_plays_less_than_five[user_pk] = total_plays_less_than_five.get(user_pk,0) + weight
+
 
 print "1. Who are the top artists?"
 print
@@ -217,4 +253,20 @@ for i, info_list in sorted_average_plays_50[:10]:
         artist = info_item['artist']
         artist_id = info_item['artist_id']
         print 'Average plays: '+ str(avg_count) +', Total plays: '+ str(playcount) +', Users: '+ str(user_count) +', Artist: '+ artist + ' ('+ str(artist_id) +')'
+print
+print "6. Do users with five or more friends listen to more songs?"
+print
+five_or_more_length = len(five_or_more)
+less_than_five_length = len(less_than_five)
+sum_total_plays_five_or_more = sum(total_plays_five_or_more.values())
+sum_total_plays_less_than_five = sum(total_plays_less_than_five.values())
+five_or_more_avg = sum_total_plays_five_or_more/five_or_more_length
+less_than_five_avg = sum_total_plays_less_than_five/less_than_five_length
+
+print 'Five or more friends:'
+print 'Average plays: '+ str(five_or_more_avg) +', Total plays: '+ str(sum_total_plays_five_or_more) +', Users: '+ str(five_or_more_length)
+print
+print 'Less than five friends:'
+print 'Average plays: '+ str(less_than_five_avg) +', Total plays: '+ str(sum_total_plays_less_than_five) +', Users: '+ str(less_than_five_length) 
+
 
