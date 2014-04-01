@@ -131,6 +131,7 @@ for (entry, user_count) in artist_to_users.items():
             
 average_plays = {}
 average_plays_b = {}
+average_plays_50 = {}
 for entry in artist_to_users:
     #print entry, artist_to_users[entry]
     user_count = artist_to_users[entry]
@@ -148,12 +149,15 @@ for entry in artist_to_users:
                 tmp['artist_id'] = entry
                 average_plays_b.setdefault((count/user_count),[]).append(tmp)
                 average_plays.setdefault((count/user_count),{}).setdefault(i, entry)
+                if user_count > 49:
+                    average_plays_50.setdefault((count/user_count),[]).append(tmp)
         
 sorted_artist_name_id_count = sorted(artist_name_id_count.items(), key=itemgetter(0), reverse=True)
 sorted_total_user_play_count = sorted(total_user_play_count.items(), key=itemgetter(1), reverse=True)
 sorted_artist_name_to_users = sorted(artist_name_to_users.items(), key=itemgetter(0), reverse=True)
 sorted_average_plays = sorted(average_plays.items(), key=itemgetter(0), reverse=True)
 sorted_average_plays_b = sorted(average_plays_b.items(), key=itemgetter(0), reverse=True)
+sorted_average_plays_50 = sorted(average_plays_50.items(), key=itemgetter(0), reverse=True)
 
 #for mini_dict in average_plays:
 #    sorted_average_plays = sorted(mini_dict, key=itemgetter(3), reverse=True)
@@ -189,7 +193,6 @@ print
 #    for (artist_name, artist_id) in artist.items():
 #        print '' + artist_name + ' ('+ str(artist_id) +') ' + str(avg_per) + ''
 
-#print sorted_average_plays_b[:10]
 for i, info_list in sorted_average_plays_b[:10]:
     for info_item in info_list:
         #print info_item
@@ -199,5 +202,19 @@ for i, info_list in sorted_average_plays_b[:10]:
         artist = info_item['artist']
         artist_id = info_item['artist_id']
         print 'Average plays: '+ str(avg_count) +', Total plays: '+ str(playcount) +', Users: '+ str(user_count) +', Artist: '+ artist + ' ('+ str(artist_id) +')'
-    
+
+#print sorted_average_plays_50[:10]
+print
+
+print "5. Which artists with at least 50 listeners have the highest average number of plays per listener?"
+print
+
+for i, info_list in sorted_average_plays_50[:10]:
+    for info_item in info_list:
+        avg_count = info_item['avg_count']
+        user_count = info_item['user_count']
+        playcount = info_item['playcount']
+        artist = info_item['artist']
+        artist_id = info_item['artist_id']
+        print 'Average plays: '+ str(avg_count) +', Total plays: '+ str(playcount) +', Users: '+ str(user_count) +', Artist: '+ artist + ' ('+ str(artist_id) +')'
 
