@@ -99,6 +99,7 @@ fp3.close()
 total_play_count = {}
 total_user_play_count = {}
 artist_to_users = {}
+users_to_artist = {}
 for entry in play_info:
     pk = entry['artistID']
     user_pk = entry['userID']
@@ -107,6 +108,9 @@ for entry in play_info:
     total_play_count[pk] = total_play_count.get(pk,0) + weight
     total_user_play_count[user_pk] = total_user_play_count.get(user_pk,0) + weight
     artist_to_users[pk] = artist_to_users.get(pk,0) + 1
+    
+    #this is for question 7, creates dict w/ key or artist_id and value of user_id
+    users_to_artist.setdefault(pk, []).append(user_pk)
 
 #print total_play_count
 
@@ -268,5 +272,35 @@ print 'Average plays: '+ str(five_or_more_avg) +', Total plays: '+ str(sum_total
 print
 print 'Less than five friends:'
 print 'Average plays: '+ str(less_than_five_avg) +', Total plays: '+ str(sum_total_plays_less_than_five) +', Users: '+ str(less_than_five_length) 
+print
+#print users_to_artist
 
+#start question 7
+def artist_sim(aid1, aid2):
+    shared_users = []
+    aid1_only = []
+    aid2_only = []
+    value_aid1 = users_to_artist.get(aid1)
+    value_aid2 = users_to_artist.get(aid2)
+    
+    for user in value_aid1:
+        if user in value_aid2:
+            shared_users.append(user)
+        else:
+            aid1_only.append(user)
+    for user in value_aid2:
+        if user not in value_aid1:
+            aid2_only.append(user)
+    print
+    print value_aid1
+    print
+    print value_aid2
+    print
+    print shared_users
+    print
+    print aid1_only
+    print
+    print aid2_only
+
+artist_sim(735, 562)
 
