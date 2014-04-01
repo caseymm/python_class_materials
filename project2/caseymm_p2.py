@@ -282,6 +282,15 @@ def artist_sim(aid1, aid2):
     aid2_only = []
     value_aid1 = users_to_artist.get(aid1)
     value_aid2 = users_to_artist.get(aid2)
+    artist1 = ''
+    artist1_list = artist_info_dict.get(aid1)
+    for artist in artist1_list:
+        artist1 = artist
+    
+    artist2 = ''
+    artist2_list = artist_info_dict.get(aid2)
+    for artist in artist2_list:
+        artist2 = artist
     
     for user in value_aid1:
         if user in value_aid2:
@@ -291,16 +300,24 @@ def artist_sim(aid1, aid2):
     for user in value_aid2:
         if user not in value_aid1:
             aid2_only.append(user)
-    print
-    print value_aid1
-    print
-    print value_aid2
-    print
-    print shared_users
-    print
-    print aid1_only
-    print
-    print aid2_only
+    
+    shared_users_length = len(shared_users)
+    aid1_only_length = len(aid1_only)
+    aid2_only_length = len(aid2_only)
+            
+    total = shared_users_length + aid1_only_length + aid2_only_length
+    print 
+    index = float(shared_users_length)/float(total)
+    print artist1+', '+ artist2+'   '+ str(index)
 
-artist_sim(735, 562)
+print "7. How similar are two artists?"
+
+artist_sim(735,562)
+artist_sim(735,89)
+artist_sim(735,289)
+artist_sim(89,289)
+artist_sim(89,67)
+artist_sim(67,735)
+
+
 
