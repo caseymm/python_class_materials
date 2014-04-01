@@ -185,8 +185,19 @@ print
 
 print "4. Which artists have the highest average number of plays per listener?"
 print
-for (avg_per, artist) in sorted_average_plays[:10]:
-    for (artist_name, artist_id) in artist.items():
-        print '' + artist_name + ' ('+ str(artist_id) +') ' + str(avg_per) + ''
+#for (avg_per, artist) in sorted_average_plays[:10]:
+#    for (artist_name, artist_id) in artist.items():
+#        print '' + artist_name + ' ('+ str(artist_id) +') ' + str(avg_per) + ''
 
-print sorted_average_plays_b[:10]
+#print sorted_average_plays_b[:10]
+for i, info_list in sorted_average_plays_b[:10]:
+    for info_item in info_list:
+        #print info_item
+        avg_count = info_item['avg_count']
+        user_count = info_item['user_count']
+        playcount = info_item['playcount']
+        artist = info_item['artist']
+        artist_id = info_item['artist_id']
+        print 'Average plays: '+ str(avg_count) +', Total plays: '+ str(playcount) +', Users: '+ str(user_count) +', Artist: '+ artist + ' ('+ str(artist_id) +')'
+    
+
