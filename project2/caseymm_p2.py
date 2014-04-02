@@ -320,4 +320,54 @@ artist_sim(89,67)
 artist_sim(67,735)
 
 
+#started question 8
+aug = {}
+sept = {}
+octob = {}
+nov = {}
+dec = {}
+
+popular_aug = {}
+popular_sept = {}
+popular_octob = {}
+popular_nov = {}
+popular_dec = {}
+
+for tag_item in tag_info_final:
+    year = tag_item['year']
+    month = tag_item['month']
+    day = tag_item['day']
+    userID = tag_item['userID']
+    artistID = tag_item['artistID']
+    tagID = tag_item['tagID']
+    tmp = {}
+    tmp['userID'] = userID
+    tmp['artistID'] = artistID
+    tmp['tagID'] = tagID
+    tmp['day'] = day
+    tmp['month'] = month
+    tmp['year'] = year
+    
+    if year == 2005:
+        if month == 8:
+            aug.setdefault(artistID, []).append(tmp)
+            popular_aug[artistID] = popular_aug.get(artistID,0) + 1
+        elif month == 9:
+            sept.setdefault(artistID, []).append(tmp)
+            popular_sept[artistID] = popular_sept.get(artistID,0) + 1
+        elif month == 10:
+            octob.setdefault(artistID, []).append(tmp)
+            popular_octob[artistID] = popular_octob.get(artistID,0) + 1
+        elif month == 11:
+            nov.setdefault(artistID, []).append(tmp)
+            popular_nov[artistID] = popular_nov.get(artistID,0) + 1
+        elif month == 12:
+            dec.setdefault(artistID, []).append(tmp)
+            popular_dec[artistID] = popular_dec.get(artistID,0) + 1
+
+#print aug
+
+sorted_popular_aug = sorted(popular_aug.items(), key=itemgetter(1), reverse=True)
+for artistID, count in sorted_popular_aug[:10]:
+    print artistID, count
 
