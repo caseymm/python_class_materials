@@ -202,6 +202,76 @@ for user_pk, weight in sorted_total_user_play_count:
     if user_pk in less_than_five:
         total_plays_less_than_five[user_pk] = total_plays_less_than_five.get(user_pk,0) + weight
 
+#start question 7
+def artist_sim(aid1, aid2):
+    shared_users = []
+    aid1_only = []
+    aid2_only = []
+    value_aid1 = users_to_artist.get(aid1)
+    value_aid2 = users_to_artist.get(aid2)
+    artist1 = ''
+    artist1_list = artist_info_dict.get(aid1)
+    for artist in artist1_list:
+        artist1 = artist
+    
+    artist2 = ''
+    artist2_list = artist_info_dict.get(aid2)
+    for artist in artist2_list:
+        artist2 = artist
+    
+    for user in value_aid1:
+        if user in value_aid2:
+            shared_users.append(user)
+        else:
+            aid1_only.append(user)
+    for user in value_aid2:
+        if user not in value_aid1:
+            aid2_only.append(user)
+    
+    shared_users_length = len(shared_users)
+    aid1_only_length = len(aid1_only)
+    aid2_only_length = len(aid2_only)
+            
+    total = shared_users_length + aid1_only_length + aid2_only_length
+    index = float(shared_users_length)/float(total)
+    print artist1+', '+ artist2+'   '+ str(index)
+
+#started question 8
+popular_alltime = {}
+popular_aug = {}
+popular_sept = {}
+popular_octob = {}
+popular_nov = {}
+popular_dec = {}
+
+for tag_item in tag_info_final:
+    year = tag_item['year']
+    month = tag_item['month']
+    day = tag_item['day']
+    userID = tag_item['userID']
+    artistID = tag_item['artistID']
+    tagID = tag_item['tagID']
+    tmp = {}
+    tmp['userID'] = userID
+    tmp['artistID'] = artistID
+    tmp['tagID'] = tagID
+    tmp['day'] = day
+    tmp['month'] = month
+    tmp['year'] = year
+    
+    popular_alltime[artistID] = popular_alltime.get(artistID,0) + 1
+    
+    if year == 2005:
+        if month == 8:
+            popular_aug[artistID] = popular_aug.get(artistID,0) + 1
+        elif month == 9:
+            popular_sept[artistID] = popular_sept.get(artistID,0) + 1
+        elif month == 10:
+            popular_octob[artistID] = popular_octob.get(artistID,0) + 1
+        elif month == 11:
+            popular_nov[artistID] = popular_nov.get(artistID,0) + 1
+        elif month == 12:
+            popular_dec[artistID] = popular_dec.get(artistID,0) + 1
 
 print "1. Who are the top artists?"
 print
@@ -275,41 +345,6 @@ print 'Average plays: '+ str(less_than_five_avg) +', Total plays: '+ str(sum_tot
 print
 #print users_to_artist
 
-#start question 7
-def artist_sim(aid1, aid2):
-    shared_users = []
-    aid1_only = []
-    aid2_only = []
-    value_aid1 = users_to_artist.get(aid1)
-    value_aid2 = users_to_artist.get(aid2)
-    artist1 = ''
-    artist1_list = artist_info_dict.get(aid1)
-    for artist in artist1_list:
-        artist1 = artist
-    
-    artist2 = ''
-    artist2_list = artist_info_dict.get(aid2)
-    for artist in artist2_list:
-        artist2 = artist
-    
-    for user in value_aid1:
-        if user in value_aid2:
-            shared_users.append(user)
-        else:
-            aid1_only.append(user)
-    for user in value_aid2:
-        if user not in value_aid1:
-            aid2_only.append(user)
-    
-    shared_users_length = len(shared_users)
-    aid1_only_length = len(aid1_only)
-    aid2_only_length = len(aid2_only)
-            
-    total = shared_users_length + aid1_only_length + aid2_only_length
-    print 
-    index = float(shared_users_length)/float(total)
-    print artist1+', '+ artist2+'   '+ str(index)
-
 print "7. How similar are two artists?"
 
 artist_sim(735,562)
@@ -318,53 +353,6 @@ artist_sim(735,289)
 artist_sim(89,289)
 artist_sim(89,67)
 artist_sim(67,735)
-
-
-#started question 8
-aug = {}
-sept = {}
-octob = {}
-nov = {}
-dec = {}
-
-popular_aug = {}
-popular_sept = {}
-popular_octob = {}
-popular_nov = {}
-popular_dec = {}
-
-for tag_item in tag_info_final:
-    year = tag_item['year']
-    month = tag_item['month']
-    day = tag_item['day']
-    userID = tag_item['userID']
-    artistID = tag_item['artistID']
-    tagID = tag_item['tagID']
-    tmp = {}
-    tmp['userID'] = userID
-    tmp['artistID'] = artistID
-    tmp['tagID'] = tagID
-    tmp['day'] = day
-    tmp['month'] = month
-    tmp['year'] = year
-    
-    #Do I actually need the first set?!?!?
-    if year == 2005:
-        if month == 8:
-            aug.setdefault(artistID, []).append(tmp)
-            popular_aug[artistID] = popular_aug.get(artistID,0) + 1
-        elif month == 9:
-            sept.setdefault(artistID, []).append(tmp)
-            popular_sept[artistID] = popular_sept.get(artistID,0) + 1
-        elif month == 10:
-            octob.setdefault(artistID, []).append(tmp)
-            popular_octob[artistID] = popular_octob.get(artistID,0) + 1
-        elif month == 11:
-            nov.setdefault(artistID, []).append(tmp)
-            popular_nov[artistID] = popular_nov.get(artistID,0) + 1
-        elif month == 12:
-            dec.setdefault(artistID, []).append(tmp)
-            popular_dec[artistID] = popular_dec.get(artistID,0) + 1
 
 print
 print "8. For each month in 2005, what artists were tagged the most?"
@@ -417,3 +405,21 @@ for artistID, count in sorted_popular_dec[:10]:
     artist_name_list = artist_info_dict.get(artistID)
     for artist_name in artist_name_list:
         print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
+
+print
+print "All Time Tags"
+print
+sorted_popular_alltime = sorted(popular_alltime.items(), key=itemgetter(1), reverse=True)
+for artistID, count in sorted_popular_alltime[:10]:
+    
+    
+    
+    artist_name_list = artist_info_dict.get(artistID)
+    for artist_name in artist_name_list:
+        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
+        #for artistID in popular_alltime:
+            #print artistID
+
+print
+print tag_info_final
+#want to sort by year and then month
