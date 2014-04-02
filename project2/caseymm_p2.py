@@ -348,6 +348,7 @@ for tag_item in tag_info_final:
     tmp['month'] = month
     tmp['year'] = year
     
+    #Do I actually need the first set?!?!?
     if year == 2005:
         if month == 8:
             aug.setdefault(artistID, []).append(tmp)
@@ -365,9 +366,54 @@ for tag_item in tag_info_final:
             dec.setdefault(artistID, []).append(tmp)
             popular_dec[artistID] = popular_dec.get(artistID,0) + 1
 
-#print aug
+print
+print "8. For each month in 2005, what artists were tagged the most?"
+print
+print "August 2005"
+print
 
 sorted_popular_aug = sorted(popular_aug.items(), key=itemgetter(1), reverse=True)
 for artistID, count in sorted_popular_aug[:10]:
-    print artistID, count
+    artist_name_list = artist_info_dict.get(artistID)
+    for artist_name in artist_name_list:
+        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
 
+print
+print "September 2005"
+print
+
+sorted_popular_sept = sorted(popular_sept.items(), key=itemgetter(1), reverse=True)
+for artistID, count in sorted_popular_sept[:10]:
+    artist_name_list = artist_info_dict.get(artistID)
+    for artist_name in artist_name_list:
+        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
+
+print
+print "October 2005"
+print
+
+sorted_popular_octob = sorted(popular_octob.items(), key=itemgetter(1), reverse=True)
+for artistID, count in sorted_popular_octob[:10]:
+    artist_name_list = artist_info_dict.get(artistID)
+    for artist_name in artist_name_list:
+        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
+
+print
+print "November 2005"
+print
+
+sorted_popular_nov = sorted(popular_nov.items(), key=itemgetter(1), reverse=True)
+for artistID, count in sorted_popular_nov[:10]:
+    artist_name_list = artist_info_dict.get(artistID)
+    for artist_name in artist_name_list:
+        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
+
+print
+print "December 2005"
+print
+
+sorted_popular_dec = sorted(popular_dec.items(), key=itemgetter(1), reverse=True)
+for artistID, count in sorted_popular_dec[:10]:
+    artist_name_list = artist_info_dict.get(artistID)
+    for artist_name in artist_name_list:
+        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
