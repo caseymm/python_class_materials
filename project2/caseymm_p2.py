@@ -8,11 +8,16 @@ artist_info_dict = {}
 for line in fp:
     line = line.strip()
     #artist_info.append(line)
-    fields = line.split();
+    #fields = line.split();
+    fields = line.split("\t")
     
     #only getting first word in artist name!!!
     
     artist = fields[1]
+    artist2 = fields[2]
+    #artist3 = fields[3]
+    #artist full name need to strip http out #############
+    
     artist_id = int(fields[0])
     tmp = {}
     tmp['artist'] = artist
@@ -244,6 +249,7 @@ popular_octob = {}
 popular_nov = {}
 popular_dec = {}
 
+tag_info_final_sortable = {} #sortable artist info
 for tag_item in tag_info_final:
     year = tag_item['year']
     month = tag_item['month']
@@ -259,6 +265,11 @@ for tag_item in tag_info_final:
     tmp['month'] = month
     tmp['year'] = year
     
+    tag_info_final_sortable.setdefault((year, month), []).append(tmp)
+    
+    #tag_info_final[(month, year)] = tag_info_final_sortable.get(artistID, userID, month, day, year)
+    #sorted_tag_info_final_year = sorted(tag_item.item(5), key=itemgetter(1))
+    #print sorted_tag_info_final_year
     popular_alltime[artistID] = popular_alltime.get(artistID,0) + 1
     
     if year == 2005:
@@ -272,6 +283,14 @@ for tag_item in tag_info_final:
             popular_nov[artistID] = popular_nov.get(artistID,0) + 1
         elif month == 12:
             popular_dec[artistID] = popular_dec.get(artistID,0) + 1
+            
+
+#sorted_tag_info_final_month = sorted(sorted_tag_info_final_year.items(), key=itemgetter(2))
+sorted_popular_alltime = sorted(popular_alltime.items(), key=itemgetter(1), reverse=True)
+the_top_ten = sorted_popular_alltime[:10]
+
+sorted_tag_info_final_sortable = sorted(tag_info_final_sortable.items(), key=itemgetter(0))
+
 
 print "1. Who are the top artists?"
 print
@@ -409,10 +428,8 @@ for artistID, count in sorted_popular_dec[:10]:
 print
 print "All Time Tags"
 print
-sorted_popular_alltime = sorted(popular_alltime.items(), key=itemgetter(1), reverse=True)
-for artistID, count in sorted_popular_alltime[:10]:
-    
-    
+
+for artistID, count in the_top_ten:
     
     artist_name_list = artist_info_dict.get(artistID)
     for artist_name in artist_name_list:
@@ -420,6 +437,22 @@ for artistID, count in sorted_popular_alltime[:10]:
         #for artistID in popular_alltime:
             #print artistID
 
+
 print
-print tag_info_final
+#print tag_info_final_sortable
+#print sorted_tag_info_final_sortable
+artistID_counts = {}
+for (date, info) in sorted_tag_info_final_sortable:
+    tags_in_month = {}
+    #stim_10 = ""
+    for info_item in info:
+        artistID = info_item['artistID']
+        
+        #if artistID in the_top_ten:
+        tags_in_month[artistID] = tags_in_month.get(artistID,0) + 1
+    sorted_tags_in_month = sorted(tags_in_month.items(), key=itemgetter(1), reverse=True)
+    stim_10 = sorted_tags_in_month[:10]
+    artistID_counts.setdefault(date, []).append(stim_10)
+    sorted_artistID_counts = sorted(artistID_counts.items(), key=itemgetter(0))
+print sorted_artistID_counts
 #want to sort by year and then month
