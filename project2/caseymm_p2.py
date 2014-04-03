@@ -454,5 +454,18 @@ for (date, info) in sorted_tag_info_final_sortable:
     stim_10 = sorted_tags_in_month[:10]
     artistID_counts.setdefault(date, []).append(stim_10)
     sorted_artistID_counts = sorted(artistID_counts.items(), key=itemgetter(0))
-print sorted_artistID_counts
-#want to sort by year and then month
+
+artist_months = {}
+for (date,top_artists) in sorted_artistID_counts:
+    for inner_list in top_artists:
+        for (artistID, tags) in inner_list:
+            #print artistID
+            artist_months.setdefault(artistID, []).append(date)
+
+#print artist_months
+for artistID in the_top_ten:
+    for artistID in artist_months:
+        print artistID
+                
+            
+    
