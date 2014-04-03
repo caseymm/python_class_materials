@@ -314,7 +314,7 @@ print "3. Which artists have the most listeners?"
 print
 for (user_count, artist) in sorted_artist_name_to_users[:10]:
     for (artist_name, artist_id) in artist.items():
-        print '' + artist_name + ' ('+ str(artist_id) +') ' + str(user_count) + ''
+        print '' + artist_name + ' ('+ str(artist_id) +'): ' + str(user_count) + ''
 
 print
 
@@ -332,7 +332,7 @@ for i, info_list in sorted_average_plays_b[:10]:
         playcount = info_item['playcount']
         artist = info_item['artist']
         artist_id = info_item['artist_id']
-        print 'Average plays: '+ str(avg_count) +', Total plays: '+ str(playcount) +', Users: '+ str(user_count) +', Artist: '+ artist + ' ('+ str(artist_id) +')'
+        print 'Artist: '+ artist + ' ('+ str(artist_id) +'), Total plays: '+ str(playcount) +', Listeners: '+ str(user_count) +', Average plays: '+ str(avg_count) 
 
 #print sorted_average_plays_50[:10]
 print
@@ -347,7 +347,7 @@ for i, info_list in sorted_average_plays_50[:10]:
         playcount = info_item['playcount']
         artist = info_item['artist']
         artist_id = info_item['artist_id']
-        print 'Average plays: '+ str(avg_count) +', Total plays: '+ str(playcount) +', Users: '+ str(user_count) +', Artist: '+ artist + ' ('+ str(artist_id) +')'
+        print 'Artist: '+ artist + ' ('+ str(artist_id) +'), Total plays: '+ str(playcount) +', Listeners: '+ str(user_count) +', Average plays: '+ str(avg_count)
 print
 print "6. Do users with five or more friends listen to more songs?"
 print
@@ -379,58 +379,51 @@ print
 print "8. For each month in 2005, what artists were tagged the most?"
 print
 print "August 2005"
-print
 
 sorted_popular_aug = sorted(popular_aug.items(), key=itemgetter(1), reverse=True)
 for artistID, count in sorted_popular_aug[:10]:
     artist_name_list = artist_info_dict.get(artistID)
     for artist_name in artist_name_list:
-        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
+        print '  '+ artist_name + ' (' + str(artistID) + '):  num tags = ' + str(count)
 
 print
 print "September 2005"
-print
 
 sorted_popular_sept = sorted(popular_sept.items(), key=itemgetter(1), reverse=True)
 for artistID, count in sorted_popular_sept[:10]:
     artist_name_list = artist_info_dict.get(artistID)
     for artist_name in artist_name_list:
-        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
+        print '  '+ artist_name + ' (' + str(artistID) + '):  num tags = ' + str(count)
 
 print
 print "October 2005"
-print
 
 sorted_popular_octob = sorted(popular_octob.items(), key=itemgetter(1), reverse=True)
 for artistID, count in sorted_popular_octob[:10]:
     artist_name_list = artist_info_dict.get(artistID)
     for artist_name in artist_name_list:
-        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
+        print '  '+ artist_name + ' (' + str(artistID) + '):  num tags = ' + str(count)
 
 print
 print "November 2005"
-print
 
 sorted_popular_nov = sorted(popular_nov.items(), key=itemgetter(1), reverse=True)
 for artistID, count in sorted_popular_nov[:10]:
     artist_name_list = artist_info_dict.get(artistID)
     for artist_name in artist_name_list:
-        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
+        print '  '+ artist_name + ' (' + str(artistID) + '):  num tags = ' + str(count)
 
 print
 print "December 2005"
-print
 
 sorted_popular_dec = sorted(popular_dec.items(), key=itemgetter(1), reverse=True)
 for artistID, count in sorted_popular_dec[:10]:
     artist_name_list = artist_info_dict.get(artistID)
     for artist_name in artist_name_list:
-        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
-
+        print '  '+ artist_name + ' (' + str(artistID) + '):  num tags = ' + str(count)
 
 print
-#print tag_info_final_sortable
-#print sorted_tag_info_final_sortable
+
 artistID_counts = {}
 for (date, info) in sorted_tag_info_final_sortable:
     tags_in_month = {}
@@ -458,23 +451,23 @@ print
 print "All Time Tags"
 print
 
-
-
 for artistID, count in the_top_ten:
     date_list = []
     
     artist_name_list = artist_info_dict.get(artistID)
     for artist_name in artist_name_list:
-        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
+        print artist_name + ' (' + str(artistID) + '):  num tags = ' + str(count)
         artist_months_list = artist_months.get(artistID)
         for (year, month) in artist_months_list:
             formated_month = datetime(year, int(month), 1)
             selected_month = formated_month.strftime("%b")
             date_str = selected_month +' '+str(year)
             date_list.append(date_str)
-        print date_list[0]
+        #print date_list[0]
+        print "  first month in top10 = " + date_list[0]
  
         months_in_top_10 = len(artist_months_list)
-        print months_in_top_10
+        print "  months in top10 = " + str(months_in_top_10)
         print
     
+###MAKE SURE to specify method like Capra said in email
