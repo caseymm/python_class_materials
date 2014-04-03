@@ -3,9 +3,9 @@ from operator import itemgetter
 from time import strftime
 from datetime import datetime
 
+#creates dict with artist_id and name
 fp = codecs.open("artists.dat", encoding="utf-8")
 fp.readline() #skip first line of headers
-artist_info = []
 artist_info_dict = {}
 for line in fp:
     line = line.strip()
@@ -15,30 +15,11 @@ for line in fp:
     tmp = {}
     tmp['artist'] = artist
     tmp['artist_id'] = artist_id
-    artist_info.append(tmp)
     artist_info_dict.setdefault(artist_id,[]).append(artist)
 fp.close()
 
-#print artist_info
-#for keys in artist_info_dict:
-    #print keys
-
-artist_info_sortable = {} #sortable artist info
-for item in artist_info:
-    a = item['artist']
-    pk = item['artist_id']
-    artist_info_sortable[(a,pk)] = artist_info_sortable.get(a,pk)
-    #artist_info_sortable[(a)] = artist_info_sortable.get(a,pk)
-    
-#print artist_info
-
-sorted_artist_info = sorted(artist_info_sortable.iteritems(), key=itemgetter(1))
-#print sorted_artist_info
-
-#this isn't really sorted since it's going by first number in sequence, not the whole number
-#for ((artist, artist_id), artist_id) in sorted_artist_info:
-    #print artist, artist_id
-
+#info for questions 2 and 3
+#creates dict containing info for each user tag
 fp2 = codecs.open("user_taggedartists.dat", encoding="utf-8")
 fp2.readline() #skip first line of headers
 tag_info = []
@@ -62,19 +43,17 @@ for line in fp2:
         tag_info.append(tmp)
 fp2.close()
 
-#print tag_info
 #This JUST filters out artists that shouldn't be in the dict, not add the artist name
 tag_info_final = []
 for entry in tag_info:
     pk = entry['artistID']
     
     if pk in artist_info_dict:
-        #this_artist = artist_info_dict.get(pk)
         tag_info_final.append(entry)
 
-#Prints only tag info with correct years and with valid artist ids        
-#print tag_info_final   
+#tag_info_final prints only tag info with correct years and with valid artist ids
 
+#creates dict containing user to artist playcount
 fp3 = codecs.open("user_artists.dat", encoding="utf-8")
 fp3.readline() #skip first line of headers
 play_info = []
@@ -91,26 +70,28 @@ for line in fp3:
     play_info.append(tmp)
 fp3.close()
 
-#print play_info
 
-#get the play count for each artist id - doesn't list artist
 total_play_count = {}
 total_user_play_count = {}
 artist_to_users = {}
 users_to_artist = {}
 for entry in play_info:
-    pk = entry['artistID']
-    user_pk = entry['userID']
+    artistID = entry['artistID']
+    userID = entry['userID']
     weight = entry['weight']
-    #total_play_count.setdefault(pk,[]).append(query_word)
-    total_play_count[pk] = total_play_count.get(pk,0) + weight
-    total_user_play_count[user_pk] = total_user_play_count.get(user_pk,0) + weight
-    artist_to_users[pk] = artist_to_users.get(pk,0) + 1
+    
+    #get the play count for each artist id - doesn't list artist
+    total_play_count[artistID] = total_play_count.get(artistID,0) + weight
+    
+    #get the play count for each user
+    total_user_play_count[userID] = total_user_play_count.get(userID,0) + weight
+    
+    #get all users who listen to this artist
+    artist_to_users[artistID] = artist_to_users.get(artistID,0) + 1
     
     #this is for question 7, creates dict w/ key or artist_id and value of user_id
-    users_to_artist.setdefault(pk, []).append(user_pk)
-
-#print total_play_count
+    #get all artists who a user listens to
+    users_to_artist.setdefault(artistID, []).append(userID)
 
 artist_name_id_count = {}
 for (entry, count) in total_play_count.items():
@@ -129,7 +110,8 @@ for (entry, user_count) in artist_to_users.items():
         for i in this_artist:
             #i is artist name, entry is artist id
             artist_name_to_users.setdefault(user_count,{}).setdefault(i, entry)
-            
+
+#starts questions 4 and 5            
 average_plays = {}
 average_plays_b = {}
 average_plays_50 = {}
@@ -160,7 +142,7 @@ sorted_average_plays = sorted(average_plays.items(), key=itemgetter(0), reverse=
 sorted_average_plays_b = sorted(average_plays_b.items(), key=itemgetter(0), reverse=True)
 sorted_average_plays_50 = sorted(average_plays_50.items(), key=itemgetter(0), reverse=True)
 
-#This starts number 6
+#start question 6
 fp4 = codecs.open("user_friends.dat", encoding="utf-8")
 fp4.readline() #skip first line of headers
 friend_info = []
@@ -234,7 +216,7 @@ def artist_sim(aid1, aid2):
     index = float(shared_users_length)/float(total)
     print artist1+', '+ artist2+'   '+ str(index)
 
-#started question 8
+#start question 8
 popular_alltime = {}
 popular_aug = {}
 popular_sept = {}
@@ -275,14 +257,34 @@ for tag_item in tag_info_final:
         elif month == 11:
             popular_nov[artistID] = popular_nov.get(artistID,0) + 1
         elif month == 12:
-            popular_dec[artistID] = popular_dec.get(artistID,0) + 1
-            
+            popular_dec[artistID] = popular_dec.get(artistID,0) + 1          
 
-#sorted_tag_info_final_month = sorted(sorted_tag_info_final_year.items(), key=itemgetter(2))
+#start question 9
 sorted_popular_alltime = sorted(popular_alltime.items(), key=itemgetter(1), reverse=True)
 the_top_ten = sorted_popular_alltime[:10]
 
 sorted_tag_info_final_sortable = sorted(tag_info_final_sortable.items(), key=itemgetter(0))
+
+artistID_counts = {}
+for (date, info) in sorted_tag_info_final_sortable:
+    tags_in_month = {}
+    #stim_10 = ""
+    for info_item in info:
+        artistID = info_item['artistID']
+        
+        #if artistID in the_top_ten:
+        tags_in_month[artistID] = tags_in_month.get(artistID,0) + 1
+    sorted_tags_in_month = sorted(tags_in_month.items(), key=itemgetter(1), reverse=True)
+    stim_10 = sorted_tags_in_month[:10]
+    artistID_counts.setdefault(date, []).append(stim_10)
+    sorted_artistID_counts = sorted(artistID_counts.items(), key=itemgetter(0))
+
+artist_months = {}
+for (date,top_artists) in sorted_artistID_counts:
+    for inner_list in top_artists:
+        for (artistID, tags) in inner_list:
+            #print artistID
+            artist_months.setdefault(artistID, []).append(date)
 
 print
 print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
@@ -427,33 +429,9 @@ for artistID, count in sorted_popular_dec[:10]:
         print '  '+ artist_name + ' (' + str(artistID) + '):  num tags = ' + str(count)
 
 print
-
-artistID_counts = {}
-for (date, info) in sorted_tag_info_final_sortable:
-    tags_in_month = {}
-    #stim_10 = ""
-    for info_item in info:
-        artistID = info_item['artistID']
-        
-        #if artistID in the_top_ten:
-        tags_in_month[artistID] = tags_in_month.get(artistID,0) + 1
-    sorted_tags_in_month = sorted(tags_in_month.items(), key=itemgetter(1), reverse=True)
-    stim_10 = sorted_tags_in_month[:10]
-    artistID_counts.setdefault(date, []).append(stim_10)
-    sorted_artistID_counts = sorted(artistID_counts.items(), key=itemgetter(0))
-
-artist_months = {}
-for (date,top_artists) in sorted_artistID_counts:
-    for inner_list in top_artists:
-        for (artistID, tags) in inner_list:
-            #print artistID
-            artist_months.setdefault(artistID, []).append(date)
-
-#print artist_months
-
-print
 print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 print
+# I am using the top 10 artists in terms of **overall** numbers of tags
 print "9. Artists with the highest number of overall tags, the first month they entered the top 10, and the number of times they appeared in the top ten."
 print
 
@@ -475,5 +453,3 @@ for artistID, count in the_top_ten:
         months_in_top_10 = len(artist_months_list)
         print "  months in top10 = " + str(months_in_top_10)
         print
-    
-###MAKE SURE to specify method like Capra said in email
