@@ -425,18 +425,6 @@ for artistID, count in sorted_popular_dec[:10]:
     for artist_name in artist_name_list:
         print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
 
-print
-print "All Time Tags"
-print
-
-for artistID, count in the_top_ten:
-    
-    artist_name_list = artist_info_dict.get(artistID)
-    for artist_name in artist_name_list:
-        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
-        #for artistID in popular_alltime:
-            #print artistID
-
 
 print
 #print tag_info_final_sortable
@@ -462,10 +450,26 @@ for (date,top_artists) in sorted_artistID_counts:
             #print artistID
             artist_months.setdefault(artistID, []).append(date)
 
-#print artist_months
-for artistID in the_top_ten:
-    for artistID in artist_months:
-        print artistID
-                
-            
+print artist_months
+
+#for artistID in artist_months:
+#    for artistID, tags in the_top_ten:
+#        print artistID
+    
+print
+print "All Time Tags"
+print
+
+for artistID, count in the_top_ten:
+    
+    artist_name_list = artist_info_dict.get(artistID)
+    for artist_name in artist_name_list:
+        print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
+        #for artistID in popular_alltime:
+            #print artistID
+        artist_months_list = artist_months.get(artistID)
+        months_in_top_10 = len(artist_months_list)
+        first_month = artist_months_list[0]
+        print months_in_top_10
+        print first_month
     
