@@ -46,9 +46,9 @@ fp2.close()
 #This JUST filters out artists that shouldn't be in the dict, not add the artist name
 tag_info_final = []
 for entry in tag_info:
-    pk = entry['artistID']
+    artistID = entry['artistID']
     
-    if pk in artist_info_dict:
+    if artistID in artist_info_dict:
         tag_info_final.append(entry)
 
 #tag_info_final prints only tag info with correct years and with valid artist ids
@@ -359,14 +359,13 @@ for i, info_list in sorted_average_plays[:10]:
         playcount = info_item['playcount']
         artist = info_item['artist']
         artist_id = info_item['artist_id']
-        print 'Artist: '+ artist + ' ('+ str(artist_id) +'), Total plays: '+ str(playcount) +', Listeners: '+ str(user_count) +', Average plays: '+ str(avg_count) 
-
-#print sorted_average_plays_50[:10]
+        print 'Artist: '+ artist + ' ('+ str(artist_id) +'), Total plays: '+ str(playcount) +',\
+Listeners: '+ str(user_count) +', Average plays: '+ str(avg_count) 
 
 print
 print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 print
-print "5. Which artists with at least 50 listeners have the highest average number of plays per listener?"
+print "5. Which artists with at least 50 listeners have the highest avg number of plays per listener?"
 print
 
 for i, info_list in sorted_average_plays_50[:10]:
@@ -376,7 +375,8 @@ for i, info_list in sorted_average_plays_50[:10]:
         playcount = info_item['playcount']
         artist = info_item['artist']
         artist_id = info_item['artist_id']
-        print 'Artist: '+ artist + ' ('+ str(artist_id) +'), Total plays: '+ str(playcount) +', Listeners: '+ str(user_count) +', Average plays: '+ str(avg_count)
+        print 'Artist: '+ artist + ' ('+ str(artist_id) +'), Total plays: \
+'+ str(playcount) +', Listeners: '+ str(user_count) +', Average plays: '+ str(avg_count)
 
 print
 print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
@@ -399,10 +399,12 @@ five_or_more_avg = sum_total_plays_five_or_more/five_or_more_length
 less_than_five_avg = sum_total_plays_less_than_five/less_than_five_length
 
 print 'Five or more friends:'
-print 'Average plays: '+ str(five_or_more_avg) +', Total plays: '+ str(sum_total_plays_five_or_more) +', Users: '+ str(five_or_more_length)
+print 'Average plays: '+ str(five_or_more_avg) +', Total plays: \
+'+ str(sum_total_plays_five_or_more) +', Users: '+ str(five_or_more_length)
 print
 print 'Less than five friends:'
-print 'Average plays: '+ str(less_than_five_avg) +', Total plays: '+ str(sum_total_plays_less_than_five) +', Users: '+ str(less_than_five_length) 
+print 'Average plays: '+ str(less_than_five_avg) +', Total plays: \
+'+ str(sum_total_plays_less_than_five) +', Users: '+ str(less_than_five_length) 
 
 print
 print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
@@ -473,24 +475,36 @@ print
 print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 print
 # I am using the top 10 artists in terms of **overall** numbers of tags
-print "9. Artists with the highest number of overall tags, the first month they entered the top 10, and the number of times they appeared in the top ten."
+print "9. Artists with the highest number of overall tags, the first month they entered"
+print "the top 10, and the number of times they appeared in the top ten."
 print
 
+#only do the following things for artists in the top 10
 for artistID, count in the_top_ten:
     date_list = []
     
+    #get the artist's name from the info dict
     artist_name_list = artist_info_dict.get(artistID)
     for artist_name in artist_name_list:
         print artist_name + ' (' + str(artistID) + '):  num tags = ' + str(count)
         artist_months_list = artist_months.get(artistID)
+        
+        #for each date info item in list for artist, convert the month number into name
         for (year, month) in artist_months_list:
             formated_month = datetime(year, int(month), 1)
             selected_month = formated_month.strftime("%b")
+            
+            #convert date object into a string
             date_str = selected_month +' '+str(year)
+            
+            #append each date string to the list for the corresponding artist
             date_list.append(date_str)
-        #print date_list[0]
+        
+        #to get the first time that the artist appeared in the top ten, get the first
+        #object in the date list for the artist
         print "  first month in top10 = " + date_list[0]
- 
+        
+        #use len to get total number of times that the artist appeared in top ten
         months_in_top_10 = len(artist_months_list)
         print "  months in top10 = " + str(months_in_top_10)
         print
