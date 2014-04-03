@@ -9,17 +9,8 @@ artist_info = []
 artist_info_dict = {}
 for line in fp:
     line = line.strip()
-    #artist_info.append(line)
-    #fields = line.split();
     fields = line.split("\t")
-    
-    #only getting first word in artist name!!!
-    
     artist = fields[1]
-    artist2 = fields[2]
-    #artist3 = fields[3]
-    #artist full name need to strip http out #############
-    
     artist_id = int(fields[0])
     tmp = {}
     tmp['artist'] = artist
@@ -293,7 +284,9 @@ the_top_ten = sorted_popular_alltime[:10]
 
 sorted_tag_info_final_sortable = sorted(tag_info_final_sortable.items(), key=itemgetter(0))
 
-
+print
+print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+print
 print "1. Who are the top artists?"
 print
 for (count, artist) in sorted_artist_name_id_count[:10]:
@@ -301,7 +294,8 @@ for (count, artist) in sorted_artist_name_id_count[:10]:
         print '' + artist_name + ' ('+ str(artist_id) +') ' + str(count) + ''
 
 print
-
+print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+print
 print "2. Who are the top users?"
 print
 for user_pk, weight in sorted_total_user_play_count[:10]:
@@ -309,7 +303,8 @@ for user_pk, weight in sorted_total_user_play_count[:10]:
     print 'user: ' + str(user_pk) + ', playcount: ' + str(weight) + ''
 
 print
-
+print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+print
 print "3. Which artists have the most listeners?"
 print
 for (user_count, artist) in sorted_artist_name_to_users[:10]:
@@ -317,7 +312,8 @@ for (user_count, artist) in sorted_artist_name_to_users[:10]:
         print '' + artist_name + ' ('+ str(artist_id) +'): ' + str(user_count) + ''
 
 print
-
+print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+print
 print "4. Which artists have the highest average number of plays per listener?"
 print
 #for (avg_per, artist) in sorted_average_plays[:10]:
@@ -335,8 +331,10 @@ for i, info_list in sorted_average_plays_b[:10]:
         print 'Artist: '+ artist + ' ('+ str(artist_id) +'), Total plays: '+ str(playcount) +', Listeners: '+ str(user_count) +', Average plays: '+ str(avg_count) 
 
 #print sorted_average_plays_50[:10]
-print
 
+print
+print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+print
 print "5. Which artists with at least 50 listeners have the highest average number of plays per listener?"
 print
 
@@ -348,6 +346,9 @@ for i, info_list in sorted_average_plays_50[:10]:
         artist = info_item['artist']
         artist_id = info_item['artist_id']
         print 'Artist: '+ artist + ' ('+ str(artist_id) +'), Total plays: '+ str(playcount) +', Listeners: '+ str(user_count) +', Average plays: '+ str(avg_count)
+
+print
+print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 print
 print "6. Do users with five or more friends listen to more songs?"
 print
@@ -363,9 +364,10 @@ print 'Average plays: '+ str(five_or_more_avg) +', Total plays: '+ str(sum_total
 print
 print 'Less than five friends:'
 print 'Average plays: '+ str(less_than_five_avg) +', Total plays: '+ str(sum_total_plays_less_than_five) +', Users: '+ str(less_than_five_length) 
-print
-#print users_to_artist
 
+print
+print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+print
 print "7. How similar are two artists?"
 
 artist_sim(735,562)
@@ -375,6 +377,8 @@ artist_sim(89,289)
 artist_sim(89,67)
 artist_sim(67,735)
 
+print
+print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 print
 print "8. For each month in 2005, what artists were tagged the most?"
 print
@@ -448,7 +452,9 @@ for (date,top_artists) in sorted_artistID_counts:
 #print artist_months
 
 print
-print "All Time Tags"
+print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+print
+print "9. Artists with the highest number of overall tags, the first month they entered the top 10, and the number of times they appeared in the top ten."
 print
 
 for artistID, count in the_top_ten:
