@@ -1,5 +1,7 @@
 import codecs
 from operator import itemgetter
+from time import strftime
+from datetime import datetime
 
 fp = codecs.open("artists.dat", encoding="utf-8")
 fp.readline() #skip first line of headers
@@ -450,26 +452,29 @@ for (date,top_artists) in sorted_artistID_counts:
             #print artistID
             artist_months.setdefault(artistID, []).append(date)
 
-print artist_months
+#print artist_months
 
-#for artistID in artist_months:
-#    for artistID, tags in the_top_ten:
-#        print artistID
-    
 print
 print "All Time Tags"
 print
 
+
+
 for artistID, count in the_top_ten:
+    date_list = []
     
     artist_name_list = artist_info_dict.get(artistID)
     for artist_name in artist_name_list:
         print artist_name + ' (' + str(artistID) + ') num tags = ' + str(count)
-        #for artistID in popular_alltime:
-            #print artistID
         artist_months_list = artist_months.get(artistID)
+        for (year, month) in artist_months_list:
+            formated_month = datetime(year, int(month), 1)
+            selected_month = formated_month.strftime("%b")
+            date_str = selected_month +' '+str(year)
+            date_list.append(date_str)
+        print date_list[0]
+ 
         months_in_top_10 = len(artist_months_list)
-        first_month = artist_months_list[0]
         print months_in_top_10
-        print first_month
+        print
     
