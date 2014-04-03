@@ -86,65 +86,64 @@ for entry in play_info:
     #get the play count for each user
     total_user_play_count[userID] = total_user_play_count.get(userID,0) + weight
     
-    #get all users who listen to this artist
+    #get number of users who listen to an artist
     artist_to_users[artistID] = artist_to_users.get(artistID,0) + 1
     
     #this is for question 7, creates dict w/ key or artist_id and value of user_id
     #get all artists who a user listens to
     users_to_artist.setdefault(artistID, []).append(userID)
 
+#set total playcount as key and append artists and ids with that number of plays
 artist_name_id_count = {}
 for (entry, count) in total_play_count.items():
-    #print entry, count
     if entry in artist_info_dict:
         this_artist = artist_info_dict.get(entry)
         for i in this_artist:
-            #artist_name_id_count.setdefault(i,{}).setdefault(entry, []).append(count)
             artist_name_id_count.setdefault(count,{}).setdefault(i, entry)
 
+#get all users who listen to an artist
 artist_name_to_users = {}
 for (entry, user_count) in artist_to_users.items():
-    #print entry, count
     if entry in artist_info_dict:
         this_artist = artist_info_dict.get(entry)
         for i in this_artist:
-            #i is artist name, entry is artist id
             artist_name_to_users.setdefault(user_count,{}).setdefault(i, entry)
 
-#starts questions 4 and 5            
+#starts questions 4 and 5
 average_plays = {}
-average_plays_b = {}
 average_plays_50 = {}
 for entry in artist_to_users:
-    #print entry, artist_to_users[entry]
     user_count = artist_to_users[entry]
     if entry in total_play_count:
         count = total_play_count[entry]
         if entry in artist_info_dict:
             this_artist = artist_info_dict.get(entry)
             for i in this_artist:
-                #i is artist name, entry is artist id
                 tmp = {}
                 tmp['avg_count'] = count/user_count
                 tmp['user_count'] = user_count
                 tmp['playcount'] = count
                 tmp['artist'] = i
                 tmp['artist_id'] = entry
-                average_plays_b.setdefault((count/user_count),[]).append(tmp)
-                average_plays.setdefault((count/user_count),{}).setdefault(i, entry)
+                
+                #gets the average plays and sets as default, appends other play info
+                average_plays.setdefault((count/user_count),[]).append(tmp)
+                
+                #gets the average plays 50+ and sets as default, appends other play info
                 if user_count > 49:
                     average_plays_50.setdefault((count/user_count),[]).append(tmp)
-        
+
+#sorts all of the dictionaries created above        
 sorted_artist_name_id_count = sorted(artist_name_id_count.items(), key=itemgetter(0), reverse=True)
 sorted_total_user_play_count = sorted(total_user_play_count.items(), key=itemgetter(1), reverse=True)
 sorted_artist_name_to_users = sorted(artist_name_to_users.items(), key=itemgetter(0), reverse=True)
 sorted_average_plays = sorted(average_plays.items(), key=itemgetter(0), reverse=True)
-sorted_average_plays_b = sorted(average_plays_b.items(), key=itemgetter(0), reverse=True)
 sorted_average_plays_50 = sorted(average_plays_50.items(), key=itemgetter(0), reverse=True)
 
 #start question 6
 fp4 = codecs.open("user_friends.dat", encoding="utf-8")
 fp4.readline() #skip first line of headers
+#creates dict with users and friends
 friend_info = []
 for line in fp4:
     line = line.strip()
@@ -157,6 +156,7 @@ for line in fp4:
     friend_info.append(tmp)
 fp4.close()
 
+#creates dict w/ userIDs paired to number of friends they have
 total_friend_count = {}
 for entry in friend_info:
     userID = entry['userID']
@@ -168,27 +168,35 @@ less_than_five = {}
 for entry in total_friend_count:
     count = total_friend_count.get(entry)
     if count >= 5:
+        #creates dicts w/userIDs paired to friends if have 5+ friends
         five_or_more.setdefault(entry, count)
     elif count < 5:
+        #creates dicts w/userIDs paired to friends if have <5 friends
         less_than_five.setdefault(entry, count)
 
 total_plays_five_or_more = {}
-for user_pk, weight in sorted_total_user_play_count:
-    if user_pk in five_or_more:
-        total_plays_five_or_more[user_pk] = total_plays_five_or_more.get(user_pk,0) + weight
+for userID, weight in sorted_total_user_play_count:
+    if userID in five_or_more:
+        #takes the users with 5+ friends and adds of of their plays together
+        total_plays_five_or_more[userID] = total_plays_five_or_more.get(userID,0) + weight
 
 total_plays_less_than_five = {}
-for user_pk, weight in sorted_total_user_play_count:
-    if user_pk in less_than_five:
-        total_plays_less_than_five[user_pk] = total_plays_less_than_five.get(user_pk,0) + weight
+for userID, weight in sorted_total_user_play_count:
+    if userID in less_than_five:
+        #takes the users with <5 friends and adds of of their plays together
+        total_plays_less_than_five[userID] = total_plays_less_than_five.get(userID,0) + weight
 
 #start question 7
 def artist_sim(aid1, aid2):
     shared_users = []
     aid1_only = []
     aid2_only = []
+    
+    #get all users who are attached to that artistID in the users_to_artist dict
     value_aid1 = users_to_artist.get(aid1)
     value_aid2 = users_to_artist.get(aid2)
+    
+    #get the names of the artists that correspond to artistIDs
     artist1 = ''
     artist1_list = artist_info_dict.get(aid1)
     for artist in artist1_list:
@@ -199,6 +207,7 @@ def artist_sim(aid1, aid2):
     for artist in artist2_list:
         artist2 = artist
     
+    #cross check values from the aid1 and aid2 lists and filter & append appropriately
     for user in value_aid1:
         if user in value_aid2:
             shared_users.append(user)
@@ -208,15 +217,18 @@ def artist_sim(aid1, aid2):
         if user not in value_aid1:
             aid2_only.append(user)
     
+    #get number of users in each filtered list
     shared_users_length = len(shared_users)
     aid1_only_length = len(aid1_only)
     aid2_only_length = len(aid2_only)
-            
+     
+    #takes computed info and runs jaccard       
     total = shared_users_length + aid1_only_length + aid2_only_length
     index = float(shared_users_length)/float(total)
     print artist1+', '+ artist2+'   '+ str(index)
 
-#start question 8
+#start question 8 and builds dict for 9
+#this does use the manual method for the first part
 popular_alltime = {}
 popular_aug = {}
 popular_sept = {}
@@ -240,13 +252,13 @@ for tag_item in tag_info_final:
     tmp['month'] = month
     tmp['year'] = year
     
+    #build original dict of all tags+info appended to tuple of year/month
     tag_info_final_sortable.setdefault((year, month), []).append(tmp)
     
-    #tag_info_final[(month, year)] = tag_info_final_sortable.get(artistID, userID, month, day, year)
-    #sorted_tag_info_final_year = sorted(tag_item.item(5), key=itemgetter(1))
-    #print sorted_tag_info_final_year
+    #count the occurrances of the artist for most popular total
     popular_alltime[artistID] = popular_alltime.get(artistID,0) + 1
     
+    #make dicts for 2005 to get most popular artists
     if year == 2005:
         if month == 8:
             popular_aug[artistID] = popular_aug.get(artistID,0) + 1
@@ -260,30 +272,43 @@ for tag_item in tag_info_final:
             popular_dec[artistID] = popular_dec.get(artistID,0) + 1          
 
 #start question 9
+#sort most popular artists
 sorted_popular_alltime = sorted(popular_alltime.items(), key=itemgetter(1), reverse=True)
+
+#slice most popular artists and get the 10 most popular
 the_top_ten = sorted_popular_alltime[:10]
 
+#create sorted dict with by key of yr/month tuple, appends dict for each tag info 
 sorted_tag_info_final_sortable = sorted(tag_info_final_sortable.items(), key=itemgetter(0))
 
 artistID_counts = {}
 for (date, info) in sorted_tag_info_final_sortable:
     tags_in_month = {}
-    #stim_10 = ""
     for info_item in info:
         artistID = info_item['artistID']
         
-        #if artistID in the_top_ten:
+        #count the number of times that the artist appears in each month
         tags_in_month[artistID] = tags_in_month.get(artistID,0) + 1
+    
+    #for each month, sort the artists in it by count    
     sorted_tags_in_month = sorted(tags_in_month.items(), key=itemgetter(1), reverse=True)
+    
+    #get the top 10 artist for each month
     stim_10 = sorted_tags_in_month[:10]
+    
+    #append the list of the top 10 artist to that month in dict
     artistID_counts.setdefault(date, []).append(stim_10)
+    
+    #sort full dictionary by date tuple to get correct order
     sorted_artistID_counts = sorted(artistID_counts.items(), key=itemgetter(0))
 
 artist_months = {}
 for (date,top_artists) in sorted_artistID_counts:
     for inner_list in top_artists:
         for (artistID, tags) in inner_list:
-            #print artistID
+            
+            #for each month that the artist was in the top 10
+            #take that m/yr pair and append it to the artist id
             artist_months.setdefault(artistID, []).append(date)
 
 print
@@ -291,6 +316,8 @@ print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 print
 print "1. Who are the top artists?"
 print
+
+#for items in top 10 (slided), get name and id
 for (count, artist) in sorted_artist_name_id_count[:10]:
     for (artist_name, artist_id) in artist.items():
         print '' + artist_name + ' ('+ str(artist_id) +') ' + str(count) + ''
@@ -300,15 +327,18 @@ print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 print
 print "2. Who are the top users?"
 print
-for user_pk, weight in sorted_total_user_play_count[:10]:
-    #print user_pk, weight
-    print 'user: ' + str(user_pk) + ', playcount: ' + str(weight) + ''
+
+#get info for top 10 users who have played most songs
+for userID, weight in sorted_total_user_play_count[:10]:
+    print 'user: ' + str(userID) + ', playcount: ' + str(weight) + ''
 
 print
 print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 print
 print "3. Which artists have the most listeners?"
 print
+
+#from slided dict, get top 10 artists w/most plays
 for (user_count, artist) in sorted_artist_name_to_users[:10]:
     for (artist_name, artist_id) in artist.items():
         print '' + artist_name + ' ('+ str(artist_id) +'): ' + str(user_count) + ''
@@ -318,13 +348,12 @@ print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 print
 print "4. Which artists have the highest average number of plays per listener?"
 print
-#for (avg_per, artist) in sorted_average_plays[:10]:
-#    for (artist_name, artist_id) in artist.items():
-#        print '' + artist_name + ' ('+ str(artist_id) +') ' + str(avg_per) + ''
 
-for i, info_list in sorted_average_plays_b[:10]:
+#4 and 5 do the same thing, but 4 doesn't require specific number of users
+
+#get top 10 artists sorted by most average pays
+for i, info_list in sorted_average_plays[:10]:
     for info_item in info_list:
-        #print info_item
         avg_count = info_item['avg_count']
         user_count = info_item['user_count']
         playcount = info_item['playcount']
@@ -354,10 +383,18 @@ print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 print
 print "6. Do users with five or more friends listen to more songs?"
 print
+
+#count the respecitve lists to get total number of users in them
 five_or_more_length = len(five_or_more)
 less_than_five_length = len(less_than_five)
+
+#add each user's plays together for the artist to get the total number
+#of plays for the artist
 sum_total_plays_five_or_more = sum(total_plays_five_or_more.values())
 sum_total_plays_less_than_five = sum(total_plays_less_than_five.values())
+
+#use varaibles defined above to get total number of plays for those with
+#5+ or <5 users attached to them
 five_or_more_avg = sum_total_plays_five_or_more/five_or_more_length
 less_than_five_avg = sum_total_plays_less_than_five/less_than_five_length
 
@@ -383,6 +420,10 @@ print
 print '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 print
 print "8. For each month in 2005, what artists were tagged the most?"
+
+#for each of these, sort the respective dict, slice to get 10 most popular
+#run through artist dictionary to get name from id
+
 print
 print "August 2005"
 
