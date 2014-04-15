@@ -1,0 +1,7 @@
+yankees|al|6|6|46|52
+nationals|nl|7|5|60|50
+cardinals|nl|7|5|48|48
+redsox|al|5|7|44|50
+braves|nl|8|4|46|33
+cubs|nl|4|8|47|55
+tigers|al|6|4|40|39
