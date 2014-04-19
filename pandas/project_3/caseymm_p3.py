@@ -16,24 +16,17 @@ user_taggedartists_df = pd.read_csv('User_taggedartists.dat', sep='\t')
 print "111111111111111111111111111"
 
 new_artists = artists_df[['id','name']]
-#flipped = artists_df.T[:2]
-#artists_sliced = flipped.T
-#print artists_sliced
 new_artists.columns = ['artistID', 'artist']
 print new_artists
-
-
 
 print
 print "222222222222222222222222222222222"
 
 #prints user > artist > weight
-print user_artists_df.sort_index()
+sorted_user_weights = user_artists_df.sort_index().sum(level=0).sort('weight', ascending=False)
 
 #prints artist > user > weight
-print str(user_artists_df_b.sort_index())
-
-
+sorted_artist_weights = user_artists_df_b.sort_index().sum(level=0).sort('weight', ascending=False)
 
 print
 print "333333333333333333333333333333333333"
@@ -47,3 +40,24 @@ merged_info = pd.merge(user_tagged, new_artists)
 
 result = merged_info.sort(['userID', 'artistID'])
 print result
+
+################ OUTPUT ####################
+
+print "Question 1"
+print
+most_popular = pd.merge(new_artists, sorted_artist_weights, left_on='artistID', right_index=True).sort('weight', ascending=False)[:10]
+
+#need to delete index from this
+print most_popular
+
+print
+print "Question 2"
+print
+print sorted_user_weights[:10]
+
+print
+print "Question 3"
+print
+artist_to_user = user_artists_df_b.sort_index().count(level=0)
+artist_to_user_merge = pd.merge(new_artists, artist_to_user, left_on='artistID', right_index=True).sort('weight', ascending=False)[:10]
+print artist_to_user_merge
