@@ -21,6 +21,7 @@ print str(df[['unc','ncstate']]) #retrieves columns
 print
 print str(df[:2]) #slices on rows
 print
+print "ADFGQRDBADFBDSFBNSDsldkbnadlkfbnad;fnFNSFNFXNS"
 print df['duke']>4.0
 print str(df[df['duke']>4.0])
 
@@ -33,7 +34,7 @@ print s
 print
 print str(df - s)
 
-print
+print "df2df2df2df2df2df2df2df2df2df2df2df2df2df2df2df2df2df2df2"
 df2 = df.ix[[2014, 2012, 2013], ['unc', 'duke', 'ncstate']]
 print str(df2)
 print
