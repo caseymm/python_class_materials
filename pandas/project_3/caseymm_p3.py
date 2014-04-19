@@ -10,19 +10,13 @@ artists_df = pd.read_csv('artists.dat', sep='\t')
 user_artists_df = pd.read_csv('user_artists.dat', sep='\t', index_col=['userID', 'artistID'])
 user_artists_df_b = pd.read_csv('user_artists.dat', sep='\t', index_col=['artistID', 'userID'])
 
-#user_taggedartists_df = pd.read_csv('User_taggedartists.dat', sep='\t', index_col=['artistID', 'userID'])
-user_taggedartists_df = pd.read_csv('User_taggedartists.dat', sep='\t')
+user_taggedartists_df = pd.read_csv('User_taggedartists.dat', sep='\t', index_col=['artistID', 'userID'])
 
 ###############
 
-print "111111111111111111111111111"
-
 new_artists = artists_df[['id','name']]
 new_artists.columns = ['artistID', 'artist']
-print new_artists
-
-print
-print "222222222222222222222222222222222"
+#print new_artists
 
 #prints user > artist > weight
 sorted_user_weights = user_artists_df.sort_index().sum(level=0).sort('weight', ascending=False)
@@ -30,18 +24,21 @@ sorted_user_weights = user_artists_df.sort_index().sum(level=0).sort('weight', a
 #prints artist > user > weight
 sorted_artist_weights = user_artists_df_b.sort_index().sum(level=0).sort('weight', ascending=False)
 
-print
-print "333333333333333333333333333333333333"
-#print user_taggedartists_df
-
 #filters out tags that are before 2000
 user_tagged =  (user_taggedartists_df[user_taggedartists_df['year']>=2005])
 #print user_tagged
 
-merged_info = pd.merge(user_tagged, new_artists)
+august = user_tagged[(user_tagged['year']==2005) & (user_tagged['month']==8)]
+sorted_aug = august.count(level=0).sort('tagID', ascending=False)
+merged_info_aug = pd.merge(new_artists, sorted_aug, left_on='artistID', right_index=True)
+merged_info_aug['count'] = merged_info_aug['tagID']
+shorter_aug = merged_info_aug[['artistID', 'artist', 'count']].sort('count', ascending=False)
 
-result = merged_info.sort(['userID', 'artistID'])
-print result
+september = user_tagged[(user_tagged['year']==2005) & (user_tagged['month']==9)]
+sorted_sept = september.count(level=0).sort('tagID', ascending=False)
+merged_info_sept = pd.merge(new_artists, sorted_sept, left_on='artistID', right_index=True)
+merged_info_sept['count'] = merged_info_sept['tagID']
+shorter_sept = merged_info_sept[['artistID', 'artist', 'count']].sort('count', ascending=False)
 
 ################ OUTPUT ####################
 
@@ -70,7 +67,17 @@ print
 most_popular.columns = ['artistID', 'artist', 'total_plays']
 average_merge = pd.merge(artist_to_user_merge, most_popular)
 fifty_plus =  (average_merge[average_merge['weight']>=50])
-
 fifty_plus['avg'] = (fifty_plus['total_plays'])/(fifty_plus['weight'])
 selected = fifty_plus[['artist','artistID','avg']]
 print selected.sort('avg', ascending=False)[:10]
+
+print
+print "Question 5"
+print
+
+#DON'T forget to ask about counts/sorting for august
+print shorter_aug[:10]
+print shorter_sept[:10]
+
+
+

@@ -5,6 +5,7 @@ from numpy.random import randn
 import numpy as np
 
 df = pd.read_csv('courses2.csv')
+print df
 
 g = df['enroll'].groupby(df['sem'])
 
