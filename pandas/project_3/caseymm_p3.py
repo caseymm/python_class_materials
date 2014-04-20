@@ -80,6 +80,10 @@ print
 
 #DON'T forget to ask about counts/sorting for august
 print shorter_aug[:10]
+test = shorter_aug[:10]
 print shorter_sept[:10]
 
+rapid = test.to_json()
+#print rapid["artistID"]
 
+print rapid
