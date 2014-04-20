@@ -2,6 +2,7 @@ from pandas import Series, DataFrame
 import pandas as pd
 from numpy.random import randn
 import numpy as np
+import json
 
 pd.options.display.float_format = '{0:.2f}'.format
 
@@ -26,7 +27,6 @@ sorted_artist_weights = user_artists_df_b.sort_index().sum(level=0).sort('weight
 
 #filters out tags that are before 2000
 user_tagged =  (user_taggedartists_df[user_taggedartists_df['year']>=2005])
-#print user_tagged
 
 august = user_tagged[(user_tagged['year']==2005) & (user_tagged['month']==8)]
 sorted_aug = august.count(level=0).sort('tagID', ascending=False)
@@ -40,9 +40,9 @@ merged_info_sept = pd.merge(new_artists, sorted_sept, left_on='artistID', right_
 merged_info_sept['count'] = merged_info_sept['tagID']
 shorter_sept = merged_info_sept[['artistID', 'count']].sort('count', ascending=False)
 
-#count = merged_info_sept['count']
-
 ################ OUTPUT ####################
+
+#think about renaming weight
 
 print "Question 1"
 print
@@ -72,18 +72,43 @@ fifty_plus =  (average_merge[average_merge['weight']>=50])
 fifty_plus['avg'] = (fifty_plus['total_plays'])/(fifty_plus['weight'])
 fifty_plus['artistID'] = fifty_plus['artistID_x']
 selected = fifty_plus[['artistID','avg']]
-print selected.sort('avg', ascending=False)[:10]
+#print selected.sort('avg', ascending=False)[:10]
+
+avg_plays = selected.sort('avg', ascending=False)[:10]
+avg_plays_json = avg_plays.T.to_json()
+avg_plays_dict = json.loads(avg_plays_json)
+for entry in avg_plays_dict:
+    artist_ID = avg_plays_dict[entry]['artistID']
+    avg = avg_plays_dict[entry]['avg']
+    print entry +' ('+str(artist_ID)+') '+ str(avg)
+
 
 print
 print "Question 5"
 print
 
 #DON'T forget to ask about counts/sorting for august
-print shorter_aug[:10]
-test = shorter_aug[:10]
-print shorter_sept[:10]
 
-rapid = test.to_json()
-#print rapid["artistID"]
+#print shorter_aug[:10]
+aug_output = shorter_aug[:10]
 
-print rapid
+#print shorter_sept[:10]
+sept_output = shorter_sept[:10]
+
+print "Aug 2005"        
+aug_json = aug_output.T.to_json()
+aug_dict = json.loads(aug_json)
+for entry in aug_dict:
+    artist_ID = aug_dict[entry]['artistID']
+    count = aug_dict[entry]['count']
+    print '  '+entry +' ('+str(artist_ID)+'): '+ str(count)
+
+print
+print "Sep 2005" 
+sept_json = sept_output.T.to_json()
+sept_dict = json.loads(sept_json)
+for entry in sept_dict:
+    artist_ID = sept_dict[entry]['artistID']
+    count = sept_dict[entry]['count']
+    print '  '+entry +' ('+str(artist_ID)+'): '+ str(count)
+    
